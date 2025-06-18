@@ -1,6 +1,7 @@
 package busqueda;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -26,15 +27,14 @@ class FiltroFechaDeUltimaVotacionTest {
 	// --------------------------------------------------------------------------------
 
 	@BeforeEach
-	void setUp() throws Exception {
-		// MOCK
+	void setUp() {
+		// Mocks & Stubs
 		muestraConFechaDeUltimaVotacion1995 = mock(Muestra.class);
 		muestraConFechaDeUltimaVotacion2020 = mock(Muestra.class);
 
 		fecha1995 = LocalDate.of(1995, 1, 1);
 		fecha2020 = LocalDate.of(2020, 1, 1);
 
-		// STUB
 		when(muestraConFechaDeUltimaVotacion1995.getFechaDeUltimaVotacion()).thenReturn(fecha1995);
 		when(muestraConFechaDeUltimaVotacion2020.getFechaDeUltimaVotacion()).thenReturn(fecha2020);
 
@@ -44,45 +44,54 @@ class FiltroFechaDeUltimaVotacionTest {
 	// --------------------------------------------------------------------------------
 
 	@Test
-	void filtrar_RetornaUnaListaConSoloUnaMuestra_Test() {
+	void cumple_IndicaTrueSiLaFechaCoincide() {
 		// SUT
 		Filtro filtro = new FiltroFechaDeUltimaVotacion(fecha1995);
 
-		// EXERCISE
-		List<Muestra> muestrasFiltradas = filtro.filtrar(muestras);
-
-		// VERIFY
-		assertEquals(1, muestrasFiltradas.size());
+		// Exercise & Verify
+		assertTrue(filtro.cumple(muestraConFechaDeUltimaVotacion1995));
 	}
 
 	// --------------------------------------------------------------------------------
 
 	@Test
-	void filtrar_RetornaUnaListaConSoloUnaMuestraConEstadoVerificado_Test() {
+	void cumple_IndicaFalseSiLaFechaNoCoincide() {
 		// SUT
 		Filtro filtro = new FiltroFechaDeUltimaVotacion(fecha1995);
 
-		// EXERCISE
+		// Exercise & Verify
+		assertFalse(filtro.cumple(muestraConFechaDeUltimaVotacion2020));
+	}
+
+	// --------------------------------------------------------------------------------
+
+	@Test
+	void filtrar_DescribeLaListaDeMuestrasQueCumplenElFiltro() {
+		// SUT
+		Filtro filtro = new FiltroFechaDeUltimaVotacion(fecha1995);
+
+		// Exercise
 		List<Muestra> muestrasFiltradas = filtro.filtrar(muestras);
 
-		// VERIFY
+		// Verify
+		assertEquals(1, muestrasFiltradas.size());
 		assertTrue(muestrasFiltradas.contains(muestraConFechaDeUltimaVotacion1995));
 	}
 
 	// --------------------------------------------------------------------------------
 
 	@Test
-	void filtrar_RetornaUnaListaVacia_Test() {
-		// MOCK
+	void filtrar_DescribeUnaListaVaciaSiNingunaMuestraCumpleElFiltro() {
+		// Fecha futura que no coincide con ninguna muestra
 		LocalDate fecha2050 = LocalDate.of(2050, 1, 1);
 
 		// SUT
 		Filtro filtro = new FiltroFechaDeUltimaVotacion(fecha2050);
 
-		// EXERCISE
+		// Exercise
 		List<Muestra> muestrasFiltradas = filtro.filtrar(muestras);
 
-		// VERIFY
-		assertEquals(0, muestrasFiltradas.size());
+		// Verify
+		assertTrue(muestrasFiltradas.isEmpty());
 	}
 }

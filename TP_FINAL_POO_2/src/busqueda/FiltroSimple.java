@@ -1,5 +1,5 @@
 package busqueda;
 
-public interface FiltroSimple extends Filtro {
-	// NOTHING TO DO
+public abstract class FiltroSimple extends Filtro {
+	// No hay implementación adicional en esta clase.
 }

@@ -1,11 +1,9 @@
 package busqueda;
 
-import java.util.List;
-
 import muestra.Muestra;
 import varios.TipoDeInsecto;
 
-public class FiltroTipoDeInsectoDetectado implements Filtro {
+public class FiltroTipoDeInsectoDetectado extends Filtro {
 	private TipoDeInsecto tipoDeInsectoDetectado;
 
 
@@ -22,9 +20,7 @@ public class FiltroTipoDeInsectoDetectado implements Filtro {
 	}
 
 	@Override
-	public List<Muestra> filtrar(List<Muestra> muestras) {
-		return muestras.stream()
-				.filter(m -> m.getTipoDeInsectoDetectado().equals(this.getTipoDeInsectoDetectado()))
-				.toList();
+	public boolean cumple(Muestra muestra) {
+		return this.getTipoDeInsectoDetectado().equals(muestra.getTipoDeInsectoDetectado());
 	}
 }

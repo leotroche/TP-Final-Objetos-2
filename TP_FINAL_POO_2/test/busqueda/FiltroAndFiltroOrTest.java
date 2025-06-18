@@ -1,10 +1,12 @@
 package busqueda;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,10 +19,10 @@ import muestra.Muestra;
 import varios.TipoDeInsecto;
 
 class FiltroAndFiltroOrTest {
-	Muestra muestra_Vinchuca_2050_Verificada;
-	Muestra muestra_Vinchuca_2019_NoVerificada;
-	Muestra muestra_Vinchuca_1995_NoVerificada;
-	Muestra muestra_Chinche_2019_Verificada;
+	Muestra muestra_Vinchuca_2050_Verificado;
+	Muestra muestra_Vinchuca_2019_NoVerificado;
+	Muestra muestra_Vinchuca_1995_NoVerificado;
+	Muestra muestra_Chinche_2019_Verificado;
 
 	TipoDeInsecto vinchuca;
 	TipoDeInsecto chinche;
@@ -35,12 +37,12 @@ class FiltroAndFiltroOrTest {
 	List<Muestra> muestras;
 
 	@BeforeEach
-	void setUp() throws Exception {
-		// MOCK
-		muestra_Vinchuca_2050_Verificada = mock(Muestra.class);
-		muestra_Vinchuca_2019_NoVerificada = mock(Muestra.class);
-		muestra_Vinchuca_1995_NoVerificada = mock(Muestra.class);
-		muestra_Chinche_2019_Verificada = mock(Muestra.class);
+	void setUp() {
+		// Mocks & Stubs
+		muestra_Vinchuca_2050_Verificado = mock(Muestra.class);
+		muestra_Vinchuca_2019_NoVerificado = mock(Muestra.class);
+		muestra_Vinchuca_1995_NoVerificado = mock(Muestra.class);
+		muestra_Chinche_2019_Verificado = mock(Muestra.class);
 
 		vinchuca = mock(TipoDeInsecto.class);
 		chinche = mock(TipoDeInsecto.class);
@@ -52,206 +54,191 @@ class FiltroAndFiltroOrTest {
 		estadoVerificado = mock(EstadoVerificado.class);
 		estadoNoVerificado = mock(EstadoNoVerificado.class);
 
-		// STUB
-		when(muestra_Vinchuca_2050_Verificada.getTipoDeInsectoDetectado()).thenReturn(vinchuca);
-		when(muestra_Vinchuca_2050_Verificada.getFechaDeUltimaVotacion()).thenReturn(fecha2050);
-		when(muestra_Vinchuca_2050_Verificada.getEstadoDeVerificacion()).thenReturn(estadoVerificado);
+		when(muestra_Vinchuca_2050_Verificado.getTipoDeInsectoDetectado()).thenReturn(vinchuca);
+		when(muestra_Vinchuca_2050_Verificado.getFechaDeUltimaVotacion()).thenReturn(fecha2050);
+		when(muestra_Vinchuca_2050_Verificado.getEstadoDeVerificacion()).thenReturn(estadoVerificado);
 
-		when(muestra_Vinchuca_2019_NoVerificada.getTipoDeInsectoDetectado()).thenReturn(vinchuca);
-		when(muestra_Vinchuca_2019_NoVerificada.getFechaDeUltimaVotacion()).thenReturn(fecha2019);
-		when(muestra_Vinchuca_2019_NoVerificada.getEstadoDeVerificacion()).thenReturn(estadoNoVerificado);
+		when(muestra_Vinchuca_2019_NoVerificado.getTipoDeInsectoDetectado()).thenReturn(vinchuca);
+		when(muestra_Vinchuca_2019_NoVerificado.getFechaDeUltimaVotacion()).thenReturn(fecha2019);
+		when(muestra_Vinchuca_2019_NoVerificado.getEstadoDeVerificacion()).thenReturn(estadoNoVerificado);
 
-		when(muestra_Vinchuca_1995_NoVerificada.getTipoDeInsectoDetectado()).thenReturn(vinchuca);
-		when(muestra_Vinchuca_1995_NoVerificada.getFechaDeUltimaVotacion()).thenReturn(fecha1995);
-		when(muestra_Vinchuca_1995_NoVerificada.getEstadoDeVerificacion()).thenReturn(estadoNoVerificado);
+		when(muestra_Vinchuca_1995_NoVerificado.getTipoDeInsectoDetectado()).thenReturn(vinchuca);
+		when(muestra_Vinchuca_1995_NoVerificado.getFechaDeUltimaVotacion()).thenReturn(fecha1995);
+		when(muestra_Vinchuca_1995_NoVerificado.getEstadoDeVerificacion()).thenReturn(estadoNoVerificado);
 
-		when(muestra_Chinche_2019_Verificada.getTipoDeInsectoDetectado()).thenReturn(chinche);
-		when(muestra_Chinche_2019_Verificada.getFechaDeUltimaVotacion()).thenReturn(fecha2019);
-		when(muestra_Chinche_2019_Verificada.getEstadoDeVerificacion()).thenReturn(estadoVerificado);
+		when(muestra_Chinche_2019_Verificado.getTipoDeInsectoDetectado()).thenReturn(chinche);
+		when(muestra_Chinche_2019_Verificado.getFechaDeUltimaVotacion()).thenReturn(fecha2019);
+		when(muestra_Chinche_2019_Verificado.getEstadoDeVerificacion()).thenReturn(estadoVerificado);
 
-		muestras = List.of(
-				muestra_Vinchuca_2050_Verificada,
-				muestra_Vinchuca_2019_NoVerificada,
-				muestra_Vinchuca_1995_NoVerificada,
-				muestra_Chinche_2019_Verificada
+		muestras = Arrays.asList(
+				muestra_Vinchuca_2050_Verificado,
+				muestra_Vinchuca_2019_NoVerificado,
+				muestra_Vinchuca_1995_NoVerificado,
+				muestra_Chinche_2019_Verificado
 				);
 	}
 
 	/*
 	 --------------------------------------------------------------------------------
-	 CASO 1:
+	 Escenario 1:
 
-	 FECHA DE ÚLTIMA VOTACIÓN = 01/01/2019
+	 Fecha de última votación = 2019
 
-	 MUESTRAS FILTRADAS:
-	 - muestra_Vinchuca_2019_NoVerificada
-	 - muestra_Chinche_2019_Verificada
+	 Muestras filtradas esperadas:
+	 - muestra_Vinchuca_2019_NoVerificado
+	 - muestra_Chinche_2019_Verificado
 	 --------------------------------------------------------------------------------
 	 */
 
 	@Test
-	void Caso1Test() {
+	void escenario1() {
 		// SUT
 		Filtro filtro = new FiltroFechaDeUltimaVotacion(fecha2019);
 
-		// EXERCISE
+		// Exercise
 		List<Muestra> muestrasFiltradas = filtro.filtrar(muestras);
 
-		// VERIFY
+		// Verify
 		assertEquals(2, muestrasFiltradas.size());
+		assertTrue(muestrasFiltradas.contains(muestra_Vinchuca_2019_NoVerificado));
+		assertTrue(muestrasFiltradas.contains(muestra_Chinche_2019_Verificado));
 	}
 
 	/*
 	 --------------------------------------------------------------------------------
-	 CASO 2:
+	 Escenario 2:
 
-	 AND(
-	   ESTADO DE VERIFICACIÓN   = VERIFICADO,
-	   FECHA DE ÚLTIMA VOTACIÓN = 01/01/2019
-	 )
+	 AND(Verificado, 2019)
 
-	 MUESTRAS FILTRADAS:
-	 - muestra_Chinche_2019_Verificada
+	 Muestras filtradas esperadas:
+	 - muestra_Chinche_2019_Verificado
 	 --------------------------------------------------------------------------------
 	 */
 
 	@Test
-	void caso2Test() {
+	void escenarioDos() {
 		// SUT
-		Filtro filtro = new FiltroAND(
+		Filtro filtro = new FiltroAnd(
 				new FiltroEstadoDeVerificacion(estadoVerificado),
 				new FiltroFechaDeUltimaVotacion(fecha2019)
 				);
 
-		// EXERCISE
+		// Exercise
 		List<Muestra> muestrasFiltradas = filtro.filtrar(muestras);
 
-		// VERIFY
+		// Verify
 		assertEquals(1, muestrasFiltradas.size());
+		assertTrue(muestrasFiltradas.contains(muestra_Chinche_2019_Verificado));
 	}
 
 	/*
 	 --------------------------------------------------------------------------------
-	 CASO 3:
+	 Escenario 3:
 
 	 AND(
-	   TIPO DE INSECTO DETECTADO    = VINCHUCA,
-	   OR(
-	     ESTADO DE VERIFICACIÓN     = VERIFICADO,
-	     FECHA DE ÚLTIMA VOTACIÓN   = 01/01/2019
-	   )
+	   Vinchuca,
+	   OR(Verificado, 2019)
 	 )
 
-	 MUESTRAS FILTRADAS:
-	 - muestra_Vinchuca_2050_Verificada
-	 - muestra_Vinchuca_2019_NoVerificada
+	 Muestras filtradas esperadas:
+	 - muestra_Vinchuca_2050_Verificado
+	 - muestra_Vinchuca_2019_NoVerificado
 	 --------------------------------------------------------------------------------
 	 */
 
 	@Test
-	void caso3Test() {
+	void escenarioTres() {
 		// SUT
-		Filtro filtro =	new FiltroAND(
+		Filtro filtro =	new FiltroAnd(
 				new FiltroTipoDeInsectoDetectado(vinchuca),
-				new FiltroOR(
+				new FiltroOr(
 						new FiltroEstadoDeVerificacion(estadoVerificado),
 						new FiltroFechaDeUltimaVotacion(fecha2019)
 						)
 				);
 
-		// EXERCISE
+		// Exercise
 		List<Muestra> muestrasFiltradas = filtro.filtrar(muestras);
 
-		// VERIFY
+		// Verify
 		assertEquals(2, muestrasFiltradas.size());
+		assertTrue(muestrasFiltradas.contains(muestra_Vinchuca_2050_Verificado));
+		assertTrue(muestrasFiltradas.contains(muestra_Vinchuca_2019_NoVerificado));
 	}
 
 	/*
 	 --------------------------------------------------------------------------------
-	 CASO 4:
+	 Escenario 4:
 
 	 OR(
-	   AND(
-	     TIPO DE INSECTO DETECTADO = VINCHUCA,
-	     FECHA DE ÚLTIMA VOTACIÓN  = 01/01/2050,
-	     ESTADO DE VERIFICACIÓN    = VERIFICADO
-	   ),
-	   AND(
-	     TIPO DE INSECTO DETECTADO = CHINCHE,
-	     ESTADO DE VERIFICACIÓN    = VERIFICADO
-	   )
+	   AND(Vinchuca, 2050, Verificado),
+	   AND(Chinche, Verificado)
 	 )
 
-	 MUESTRAS FILTRADAS ESPERADAS:
-	 - muestra_Vinchuca_2050_Verificada  (CUMPLE LAS 3 CONDICIONES DEL PRIMER AND)
-	 - muestra_Chinche_2019_Verificada   (CUMPLE LAS 2 CONDICIONES DEL SEGUNDO AND)
+	 Muestras filtradas esperadas:
+	 - muestra_Vinchuca_2050_Verificado  (Cumple las 3 condiciones del primer AND)
+ 	 - muestra_Chinche_2019_Verificado   (Cumple las 2 condiciones del segundo AND)
 	 --------------------------------------------------------------------------------
 	 */
 
 	@Test
-	void casoComplejo1_Test() {
+	void escenario4() {
 		// SUT
-		Filtro filtro = new FiltroOR(
-				new FiltroAND(
+		Filtro filtro = new FiltroOr(
+				new FiltroAnd(
 						new FiltroTipoDeInsectoDetectado(vinchuca),
 						new FiltroFechaDeUltimaVotacion(fecha2050),
 						new FiltroEstadoDeVerificacion(estadoVerificado)
 						),
-				new FiltroAND(
+				new FiltroAnd(
 						new FiltroTipoDeInsectoDetectado(chinche),
 						new FiltroEstadoDeVerificacion(estadoVerificado)
 						)
 				);
 
-		// EXERCISE
+		// Exercise
 		List<Muestra> muestrasFiltradas = filtro.filtrar(muestras);
 
-		// VERIFY
+		// Verify
 		assertEquals(2, muestrasFiltradas.size());
+		assertTrue(muestrasFiltradas.contains(muestra_Vinchuca_2050_Verificado));
+		assertTrue(muestrasFiltradas.contains(muestra_Chinche_2019_Verificado));
 	}
 
 	/*
 	 --------------------------------------------------------------------------------
-	 CASO 5:
+	 Escenario 5:
 
 	 OR(
-	   AND(
-	     TIPO DE INSECTO DETECTADO = VINCHUCA,
-	     FECHA ÚLTIMA VOTACIÓN     = 1995,
-	     ESTADO DE VERIFICACIÓN    = VERIFICADO
-	   ),
-	   AND(
-	     TIPO DE INSECTO DETECTADO = CHINCHE,
-	     FECHA ÚLTIMA VOTACIÓN     = 2050,
-	     ESTADO DE VERIFICACIÓN    = NO VERIFICADO
-	   )
+	   AND(Vinchuca, 1995, Verificado),
+	   AND(Chinche, 2050, No Verificado)
 	 )
 
-	 CADA AND NO TIENE MUESTRAS QUE CUMPLAN TODAS SUS CONDICIONES,
-	 POR LO QUE EL OR TAMPOCO DEVUELVE NINGUNA MUESTRA.
+	 Ninguna muestra cumple todas las condiciones de los AND,
+	 por lo tanto, el OR no devuelve ninguna muestra.
 	 --------------------------------------------------------------------------------
 	 */
 
 	@Test
-	void casoNegativo_OR_con_dos_AND() {
+	void escenario5() {
 		// SUT
-		Filtro filtro = new FiltroOR(
-				new FiltroAND(
+		Filtro filtro = new FiltroOr(
+				new FiltroAnd(
 						new FiltroTipoDeInsectoDetectado(vinchuca),
 						new FiltroFechaDeUltimaVotacion(fecha1995),
 						new FiltroEstadoDeVerificacion(estadoVerificado)
 						),
-				new FiltroAND(
+				new FiltroAnd(
 						new FiltroTipoDeInsectoDetectado(chinche),
 						new FiltroFechaDeUltimaVotacion(fecha2050),
 						new FiltroEstadoDeVerificacion(estadoNoVerificado)
 						)
 				);
 
-		// EXERCISE
+		// Exercise
 		List<Muestra> muestrasFiltradas = filtro.filtrar(muestras);
 
-		// VERIFY
-		assertEquals(0, muestrasFiltradas.size());
+		// Verify
+		assertTrue(muestrasFiltradas.isEmpty());
 	}
 }

@@ -1,6 +1,7 @@
 package busqueda;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -13,12 +14,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import muestra.EstadoDeVerificacion;
+import muestra.EstadoEnProceso;
 import muestra.EstadoNoVerificado;
 import muestra.EstadoVerificado;
 import muestra.Muestra;
 import varios.TipoDeInsecto;
 
-class FiltroANDTest {
+class FiltroOrTest {
 	private Muestra muestra_Vinchuca_2019_Verificada;
 	private Muestra muestra_Vinchuca_2050_NoVerificada;
 
@@ -27,13 +29,16 @@ class FiltroANDTest {
 	private LocalDate fecha2019;
 	private LocalDate fecha2050;
 
+	private EstadoDeVerificacion estadoVerificado;
+	private EstadoDeVerificacion estadoNoVerificado;
+
 	private List<Muestra> muestras;
 
 	// --------------------------------------------------------------------------------
 
 	@BeforeEach
-	void setUp() throws Exception {
-		// MOCK
+	void setUp() {
+		// Mocks & Stubs
 		muestra_Vinchuca_2019_Verificada = mock(Muestra.class);
 		muestra_Vinchuca_2050_NoVerificada = mock(Muestra.class);
 
@@ -42,10 +47,9 @@ class FiltroANDTest {
 		fecha2019 = LocalDate.of(2019, 4, 20);
 		fecha2050 = LocalDate.of(2050, 4, 20);
 
-		EstadoDeVerificacion estadoVerificado = mock(EstadoVerificado.class);
-		EstadoDeVerificacion estadoNoVerificado = mock(EstadoNoVerificado.class);
+		estadoVerificado = mock(EstadoVerificado.class);
+		estadoNoVerificado = mock(EstadoNoVerificado.class);
 
-		// STUB
 		when(muestra_Vinchuca_2019_Verificada.getTipoDeInsectoDetectado()).thenReturn(vinchuca);
 		when(muestra_Vinchuca_2019_Verificada.getFechaDeUltimaVotacion()).thenReturn(fecha2019);
 		when(muestra_Vinchuca_2019_Verificada.getEstadoDeVerificacion()).thenReturn(estadoVerificado);
@@ -60,57 +64,76 @@ class FiltroANDTest {
 	// --------------------------------------------------------------------------------
 
 	@Test
-	void filtrar_RetornaUnaListaConSoloUnaMuestra_Test() {
+	void cumple_IndicaTrueSiLaMuestraCumpleAlgunoDeLosFiltros() {
 		// SUT
-		Filtro filtro =
-				new FiltroAND(
-						new FiltroTipoDeInsectoDetectado(vinchuca),
-						new FiltroFechaDeUltimaVotacion(fecha2019)
-						);
+		Filtro filtro = new FiltroOr(
+				new FiltroEstadoDeVerificacion(estadoVerificado),
+				new FiltroFechaDeUltimaVotacion(fecha2050)
+				);
 
-		// EXERCISE
-		List<Muestra> muestrasFiltradas = filtro.filtrar(muestras);
-
-		// VERIFY
-		assertEquals(1, muestrasFiltradas.size());
+		// Exercise & Verify
+		assertTrue(filtro.cumple(muestra_Vinchuca_2019_Verificada));
+		assertTrue(filtro.cumple(muestra_Vinchuca_2050_NoVerificada));
 	}
 
 	// --------------------------------------------------------------------------------
 
 	@Test
-	void filtrar_RetornaUnaListaConSoloUnaMuestraConEstadoVerificado_Test() {
+	void cumple_IndicaFalseSiLaMuestraNoCumpleNingunoDeLosFiltros() {
+		// Estado y fecha que no coinciden con ninguna muestra
+		EstadoDeVerificacion estadoEnProceso = mock(EstadoEnProceso.class);
+		LocalDate fechaUltimaVotacion2099 = LocalDate.of(2099, 10, 1);
+
+		// SUT
+		Filtro filtro = new FiltroOr(
+				new FiltroEstadoDeVerificacion(estadoEnProceso),
+				new FiltroFechaDeUltimaVotacion(fechaUltimaVotacion2099)
+				);
+
+		// Exercise & Verify
+		assertFalse(filtro.cumple(muestra_Vinchuca_2019_Verificada));
+		assertFalse(filtro.cumple(muestra_Vinchuca_2050_NoVerificada));
+	}
+
+	// --------------------------------------------------------------------------------
+
+	@Test
+	void filtrar_DescribeUnaListaConMuestrasQueCumplenAlgunoDeLosFiltros() {
 		// SUT
 		Filtro filtro =
-				new FiltroAND(
-						new FiltroTipoDeInsectoDetectado(vinchuca),
-						new FiltroFechaDeUltimaVotacion(fecha2019)
+				new FiltroOr(
+						new FiltroEstadoDeVerificacion(estadoVerificado),
+						new FiltroFechaDeUltimaVotacion(fecha2050)
 						);
 
-		// EXERCISE
+		// Exercise
 		List<Muestra> muestrasFiltradas = filtro.filtrar(muestras);
 
-		// VERIFY
+		// Verify
+		assertEquals(2, muestrasFiltradas.size());
 		assertTrue(muestrasFiltradas.contains(muestra_Vinchuca_2019_Verificada));
+		assertTrue(muestrasFiltradas.contains(muestra_Vinchuca_2050_NoVerificada));
 	}
 
 	// --------------------------------------------------------------------------------
 
 	@Test
-	void filtrar_RetornaUnaListaVacia_Test() {
-		// MOCK
-		EstadoDeVerificacion verificado = mock(EstadoVerificado.class);
+	void filtrar_DescribeUnaListaVaciaSiNingunaMuestraCumpleAlgunoDeLosFiltros() {
+		// Estado y fecha que no coinciden con ninguna muestra
+		EstadoDeVerificacion estadoEnProceso = mock(EstadoEnProceso.class);
+		LocalDate fechaUltimaVotacion2099 = LocalDate.of(2099, 10, 1);
 
 		// SUT
 		Filtro filtro =
-				new FiltroAND(
-						new FiltroTipoDeInsectoDetectado(vinchuca),
-						new FiltroEstadoDeVerificacion(verificado)
+				new FiltroOr(
+						new FiltroEstadoDeVerificacion(estadoEnProceso),
+						new FiltroFechaDeUltimaVotacion(fechaUltimaVotacion2099)
 						);
 
-		// EXERCISE
+		// Exercise
 		List<Muestra> muestrasFiltradas = filtro.filtrar(muestras);
 
-		// VERIFY
-		assertEquals(0, muestrasFiltradas.size());
+		// Verify
+		assertTrue(muestrasFiltradas.isEmpty());
 	}
 }

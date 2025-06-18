@@ -1,6 +1,7 @@
 package busqueda;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -26,15 +27,14 @@ class FiltroTipoDeInsectoDetectadoTest {
 	// --------------------------------------------------------------------------------
 
 	@BeforeEach
-	void setUp() throws Exception {
-		// MOCK
+	void setUp() {
+		// Mocks & Stubs
 		muestraConTipoDeInsectoDetectadoVinchuca = mock(Muestra.class);
 		muestraConTipoDeInsectoDetectadoChinche = mock(Muestra.class);
 
 		vinchuca = mock(TipoDeInsecto.class);
 		chinche = mock(TipoDeInsecto.class);
 
-		// STUB
 		when(muestraConTipoDeInsectoDetectadoVinchuca.getTipoDeInsectoDetectado()).thenReturn(vinchuca);
 		when(muestraConTipoDeInsectoDetectadoChinche.getTipoDeInsectoDetectado()).thenReturn(chinche);
 
@@ -47,15 +47,23 @@ class FiltroTipoDeInsectoDetectadoTest {
 	// --------------------------------------------------------------------------------
 
 	@Test
-	void filtrar_RetornaUnaListaConSoloUnaMuestra_Test() {
+	void cumple_IndicaTrueSiElTipoDeInsectoDetectadoCoincide() {
 		// SUT
 		Filtro filtro = new FiltroTipoDeInsectoDetectado(vinchuca);
 
-		// EXERCISE
-		List<Muestra> muestrasFiltradas = filtro.filtrar(muestras);
+		// Exercise & Verify
+		assertTrue(filtro.cumple(muestraConTipoDeInsectoDetectadoVinchuca));
+	}
 
-		// VERIFY
-		assertEquals(1, muestrasFiltradas.size());
+	// --------------------------------------------------------------------------------
+
+	@Test
+	void cumple_IndicaFalseSiElTipoDeInsectoDetectadoNoCoincide() {
+		// SUT
+		Filtro filtro = new FiltroTipoDeInsectoDetectado(vinchuca);
+
+		// Exercise & Verify
+		assertFalse(filtro.cumple(muestraConTipoDeInsectoDetectadoChinche));
 	}
 
 	// --------------------------------------------------------------------------------
@@ -65,27 +73,28 @@ class FiltroTipoDeInsectoDetectadoTest {
 		// SUT
 		Filtro filtro = new FiltroTipoDeInsectoDetectado(vinchuca);
 
-		// EXERCISE
+		// Exercise
 		List<Muestra> muestrasFiltradas = filtro.filtrar(muestras);
 
-		// VERIFY
+		// Verify
+		assertEquals(1, muestrasFiltradas.size());
 		assertTrue(muestrasFiltradas.contains(muestraConTipoDeInsectoDetectadoVinchuca));
 	}
 
 	// --------------------------------------------------------------------------------
 
 	@Test
-	void filtrar_RetornaUnaListaVacia_Test() {
-		// MOCK
+	void filtrar_DescribeUnaListaVaciaSiNingunaMuestraCumpleElFiltro() {
+		// Tipo de insecto que no coincide con ninguna muestra
 		TipoDeInsecto desconocido = mock(TipoDeInsecto.class);
 
 		// SUT
 		Filtro filtro = new FiltroTipoDeInsectoDetectado(desconocido);
 
-		// EXERCISE
+		// Exercise
 		List<Muestra> muestrasFiltradas = filtro.filtrar(muestras);
 
-		// VERIFY
-		assertEquals(0, muestrasFiltradas.size());
+		// Verify
+		assertTrue(muestrasFiltradas.isEmpty());
 	}
 }

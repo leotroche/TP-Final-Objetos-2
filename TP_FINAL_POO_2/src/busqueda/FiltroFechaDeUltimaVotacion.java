@@ -1,11 +1,10 @@
 package busqueda;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import muestra.Muestra;
 
-public class FiltroFechaDeUltimaVotacion implements FiltroSimple {
+public class FiltroFechaDeUltimaVotacion extends FiltroSimple {
 	private LocalDate fechaDeUltimaVotacion;
 
 	public FiltroFechaDeUltimaVotacion(LocalDate fechaDeUltimaVotacion) {
@@ -21,9 +20,7 @@ public class FiltroFechaDeUltimaVotacion implements FiltroSimple {
 	}
 
 	@Override
-	public List<Muestra> filtrar(List<Muestra> muestras) {
-		return muestras.stream()
-				.filter(m -> m.getFechaDeUltimaVotacion().equals(this.getFechaDeUltimaVotacion()))
-				.toList();
+	public boolean cumple(Muestra muestra) {
+		return this.getFechaDeUltimaVotacion().equals(muestra.getFechaDeUltimaVotacion());
 	}
 }

@@ -1,11 +1,9 @@
 package busqueda;
 
-import java.util.List;
-
 import muestra.EstadoDeVerificacion;
 import muestra.Muestra;
 
-public class FiltroEstadoDeVerificacion implements FiltroSimple {
+public class FiltroEstadoDeVerificacion extends FiltroSimple {
 	private EstadoDeVerificacion estadoDeVerificacion;
 
 	public FiltroEstadoDeVerificacion(EstadoDeVerificacion estadoDeVerificacion) {
@@ -21,9 +19,7 @@ public class FiltroEstadoDeVerificacion implements FiltroSimple {
 	}
 
 	@Override
-	public List<Muestra> filtrar(List<Muestra> muestras) {
-		return muestras.stream()
-				.filter(m -> m.getEstadoDeVerificacion().equals(this.getEstadoDeVerificacion()))
-				.toList();
+	public boolean cumple(Muestra muestra) {
+		return this.getEstadoDeVerificacion().equals(muestra.getEstadoDeVerificacion());
 	}
 }

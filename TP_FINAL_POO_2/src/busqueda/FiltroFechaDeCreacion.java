@@ -1,11 +1,10 @@
 package busqueda;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import muestra.Muestra;
 
-public class FiltroFechaDeCreacion implements FiltroSimple {
+public class FiltroFechaDeCreacion extends FiltroSimple {
 	private LocalDate fechaDeCreacion;
 
 	public FiltroFechaDeCreacion(LocalDate fechaDeCreacion) {
@@ -21,9 +20,7 @@ public class FiltroFechaDeCreacion implements FiltroSimple {
 	}
 
 	@Override
-	public List<Muestra> filtrar(List<Muestra> muestras) {
-		return muestras.stream()
-				.filter(m -> m.getFechaDeCreacion().equals(this.getFechaDeCreacion()))
-				.toList();
+	public boolean cumple(Muestra muestra) {
+		return this.getFechaDeCreacion().equals(muestra.getFechaDeCreacion());
 	}
 }

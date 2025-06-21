@@ -1,5 +1,6 @@
-package busqueda;
+package busqueda.filtro.atributo;
 
+import busqueda.filtro.FiltroSimple;
 import muestra.EstadoDeVerificacion;
 import muestra.Muestra;
 

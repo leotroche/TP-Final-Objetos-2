@@ -1,4 +1,4 @@
-package busqueda;
+package busqueda.filtro;
 
 import java.util.List;
 

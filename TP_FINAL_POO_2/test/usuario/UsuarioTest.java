@@ -43,6 +43,7 @@ class UsuarioTest {
     	verify(paginaMock).agregarMuestra(muestraMock);
     }
     
+    
     @Test
     void testPromocionCambioAEstadoDeConocimientoExperto() {
     	Usuario usuario = new Usuario();
@@ -55,7 +56,7 @@ class UsuarioTest {
             pagina.agregarMuestra(muestra);
         }
         for (int i = 0; i < 20; i++) {
-            Opinion opinion = new Opinion(usuario, TipoDeInsecto.VINCHUCA_INFESTANS);
+            Opinion opinion = new Opinion(usuario, TipoDeInsecto.VINCHUCA_INFESTANS, false);
             muestras.get(i % muestras.size()).getOpiniones().add(opinion);
         }
         

@@ -20,7 +20,7 @@ class UsuarioTest {
 	private Usuario usuario;
 	@BeforeEach
     void setUp() {
-		usuario = new Usuario();
+		usuario = new Usuario(false);
     }
 	
 
@@ -36,6 +36,13 @@ class UsuarioTest {
     }
     
     @Test
+    void testVerificarSiCambiaDeBasicoAExperto() {
+    	Usuario user = new Usuario(false);
+    	user.setEstadoDeConocimiento(new EstadoExperto());
+        assertTrue(user.getEstadoDeConocimiento() instanceof EstadoExperto);
+    }
+    
+    @Test
     void testVerificarEnvioDeMuestra() {
     	Muestra muestraMock = mock(Muestra.class);
     	PaginaWeb paginaMock = mock(PaginaWeb.class);
@@ -46,7 +53,7 @@ class UsuarioTest {
     
     @Test
     void testPromocionCambioAEstadoDeConocimientoExperto() {
-    	Usuario usuario = new Usuario();
+    	Usuario usuario = new Usuario(false);
     	PaginaWeb pagina = new PaginaWeb(null);
     	ArrayList<Muestra> muestras = new ArrayList<>();
         for (int i = 0; i < 9; i++) {

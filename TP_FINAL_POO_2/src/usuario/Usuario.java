@@ -11,16 +11,12 @@ public class Usuario {
 	private EstadoDeConocimiento estadoDeConocimiento;
 	private boolean tieneConocimientoValido;
 	
-	public Usuario() {
-		this.setEstadoDeConocimiento(new EstadoBasico());
-	}
-	
 	public Usuario(boolean tieneConocimientoValido) {
-		this.setEstadoDeConocimiento(new EstadoEspecialista());
+		this.setEstadoDeConocimiento( tieneConocimientoValido ? new EstadoEspecialista() : new EstadoBasico());
 		this.setTieneConocimientoValido(tieneConocimientoValido);
 	}
 	
-	private void setTieneConocimientoValido(boolean tieneConocimientoValido) {
+	public void setTieneConocimientoValido(boolean tieneConocimientoValido) {
 		this.tieneConocimientoValido = tieneConocimientoValido;
 	}
 	
@@ -32,7 +28,7 @@ public class Usuario {
 		return this.estadoDeConocimiento;
 	}
 
-	private void setEstadoDeConocimiento(EstadoDeConocimiento estado) {
+	public void setEstadoDeConocimiento(EstadoDeConocimiento estado) {
 		this.estadoDeConocimiento = estado;
 	}
 
@@ -52,12 +48,10 @@ public class Usuario {
 	}
 
 	public void promocionarSiCorresponde(PaginaWeb paginaWeb) {
-		if (tieneConocimientoValido){
-			this.setEstadoDeConocimiento(new EstadoEspecialista());
-		}else if (this.tieneMasDe10Envios(paginaWeb) && this.tieneMasDe20Opiniones(paginaWeb)) {
-			this.setEstadoDeConocimiento(new EstadoExperto());
+		if (this.tieneMasDe10Envios(paginaWeb) && this.tieneMasDe20Opiniones(paginaWeb)) {
+			this.estadoDeConocimiento.promocionar(this);
 		} else {
-			this.setEstadoDeConocimiento(new EstadoBasico());
+			this.estadoDeConocimiento.degradar(this);
 		}
 	}
 

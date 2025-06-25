@@ -17,4 +17,13 @@ public class EstadoExperto implements EstadoDeConocimiento {
 		muestra.recibirOpinionDeExperto(opinion);
 	}
 
+	@Override
+	public void promocionar(Usuario usuario) {
+	}
+
+	@Override
+	public void degradar(Usuario usuario) {
+		usuario.setEstadoDeConocimiento(new EstadoBasico());
+	}
+
 }

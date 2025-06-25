@@ -18,4 +18,12 @@ public class EstadoEspecialista implements EstadoDeConocimiento {
 		muestra.recibirOpinionDeExperto(opinion);
 	}
 
+	@Override
+	public void promocionar(Usuario usuario) {
+	}
+
+	@Override
+	public void degradar(Usuario usuario) {
+	}
+
 }

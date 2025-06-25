@@ -13,4 +13,13 @@ public class EstadoBasico implements EstadoDeConocimiento {
 	@Override
 	public void opinarSobreMuestraEnProceso(Usuario usuario, Muestra muestra, Opinion opinion) {
 	}
+
+	@Override
+	public void promocionar(Usuario usuario) {
+		usuario.setEstadoDeConocimiento(new EstadoExperto());
+	}
+
+	@Override
+	public void degradar(Usuario usuario) {
+	}
 }

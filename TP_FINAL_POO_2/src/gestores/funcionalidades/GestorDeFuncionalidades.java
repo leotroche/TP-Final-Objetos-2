@@ -6,7 +6,7 @@ import java.util.List;
 import eventos.Evento;
 import muestra.Muestra;
 import organizacion.Organizacion;
-import organizacion.ZonaDeCobertura;
+import zona.cobertura.*;
 
 public class GestorDeFuncionalidades {
 	private List<RegistroDeFuncionalidad> registros = new ArrayList<>();

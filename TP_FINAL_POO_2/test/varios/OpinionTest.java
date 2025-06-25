@@ -2,19 +2,21 @@ package varios;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import usuario.Usuario;
 
 
 
 class OpinionTest {
-	private Usuario user;
+	private Usuario user = null;
 	TipoDeInsecto vinchuca = TipoDeInsecto.VINCHUCA_INFESTANS;
+	
 	@BeforeEach
 	void setUp() throws Exception {
-		user.setNombre("Juan Gabriel");
 	}
 	
 	@Test
@@ -30,17 +32,9 @@ class OpinionTest {
 	}
 	
 	@Test
-	void testSetNombreAutor() {
-		Usuario user2 = new Usuario("Maximillion Pegasus");
+	void testgetFechaDeVotacion() {
 		Opinion opinion = new Opinion(user, vinchuca);
-		opinion.setAutor(user2);
-		assertEquals(vinchuca, opinion.getTipoDelInsecto());
+		assertEquals(LocalDate.now(), opinion.getFechaDeVotacion());
 	}
 	
-	void testSetTipoInsecto() {
-		TipoDeInsecto insecto = TipoDeInsecto.CHINCHE_FOLIADA;
-		Opinion opinion = new Opinion(user, vinchuca);
-		opinion.setTipoDeInsecto(insecto);
-		assertEquals(insecto, opinion.getTipoDelInsecto());
-	}
 }

@@ -11,9 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eventos.Evento;
-import muestra.Muestra;
-import organizacion.Organizacion;
-import organizacion.ZonaDeCobertura;
+import muestras.Muestra;
+import organizaciones.Organizacion;
+import zonas.ZonaDeCobertura;
 
 class GestorDeFuncionalidadesTest {
 	private GestorDeFuncionalidades gestor;
@@ -61,12 +61,7 @@ class GestorDeFuncionalidadesTest {
 
 		gestor.cambiarPara(evento, otraFuncionalidad); // Cambia a otra funcionalidad
 
-		gestor.ejecutarPara(
-				evento,
-				mock(Organizacion.class),
-				mock(ZonaDeCobertura.class),
-				mock(Muestra.class)
-				);
+		gestor.ejecutarPara(evento, mock(Organizacion.class), mock(ZonaDeCobertura.class), mock(Muestra.class));
 
 		assertTrue(gestor.hayFuncionalidadPara(evento));
 		verify(otraFuncionalidad).nuevoEvento(any(), any(), any());
@@ -78,12 +73,7 @@ class GestorDeFuncionalidadesTest {
 
 		gestor.cambiarPara(evento, funcionalidad);
 
-		gestor.ejecutarPara(
-				otroEvento,
-				mock(Organizacion.class),
-				mock(ZonaDeCobertura.class),
-				mock(Muestra.class)
-				);
+		gestor.ejecutarPara(otroEvento, mock(Organizacion.class), mock(ZonaDeCobertura.class), mock(Muestra.class));
 
 		verify(funcionalidad, never()).nuevoEvento(any(), any(), any());
 	}

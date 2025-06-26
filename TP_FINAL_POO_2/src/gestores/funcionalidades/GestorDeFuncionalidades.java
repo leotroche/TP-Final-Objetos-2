@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eventos.Evento;
-import muestra.Muestra;
-import organizacion.Organizacion;
-import zona.cobertura.*;
+import muestras.Muestra;
+import organizaciones.Organizacion;
+import zonas.*;
 
 public class GestorDeFuncionalidades {
 	private List<RegistroDeFuncionalidad> registros = new ArrayList<>();

@@ -1,8 +1,8 @@
 package gestores.eventos;
 
 import eventos.Evento;
-import muestra.Muestra;
-import zona.cobertura.ZonaDeCobertura;
+import muestras.Muestra;
+import zonas.ZonaDeCobertura;
 
 public interface Observer {
 	public void update(Evento evento, ZonaDeCobertura zonaDeCobertura, Muestra muestra);

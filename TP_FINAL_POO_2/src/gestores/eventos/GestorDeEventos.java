@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eventos.Evento;
-import muestra.Muestra;
-import zona.cobertura.ZonaDeCobertura;
+import muestras.Muestra;
+import zonas.ZonaDeCobertura;
 
 public class GestorDeEventos {
 	List<Suscripcion> suscripcion = new ArrayList<>();

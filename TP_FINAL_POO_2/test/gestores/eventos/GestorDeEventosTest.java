@@ -10,8 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eventos.Evento;
-import muestra.Muestra;
-import organizacion.ZonaDeCobertura;
+import muestras.Muestra;
+import zonas.ZonaDeCobertura;
 
 class GestorDeEventosTest {
 	private GestorDeEventos gestor;
@@ -38,7 +38,6 @@ class GestorDeEventosTest {
 	}
 
 	// --------------------------------------------------------------------------------
-
 
 	@Test
 	void retornaFalseCuandoNoHaySuscripciones() {

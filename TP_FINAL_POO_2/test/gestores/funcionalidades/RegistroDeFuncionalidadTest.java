@@ -9,9 +9,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eventos.Evento;
-import muestra.Muestra;
-import organizacion.Organizacion;
-import organizacion.ZonaDeCobertura;
+import muestras.Muestra;
+import organizaciones.Organizacion;
+import zonas.ZonaDeCobertura;
 
 class RegistroDeFuncionalidadTest {
 	private RegistroDeFuncionalidad registro;

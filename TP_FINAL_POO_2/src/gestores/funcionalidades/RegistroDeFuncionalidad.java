@@ -1,9 +1,9 @@
 package gestores.funcionalidades;
 
 import eventos.Evento;
-import muestra.Muestra;
-import organizacion.Organizacion;
-import organizacion.ZonaDeCobertura;
+import muestras.Muestra;
+import organizaciones.Organizacion;
+import zonas.ZonaDeCobertura;
 
 public class RegistroDeFuncionalidad {
 	private Evento evento;

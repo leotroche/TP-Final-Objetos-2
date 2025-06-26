@@ -267,7 +267,6 @@ class MuestraTest {
 		assertEquals(fecha2, muestra.getFechaDeUltimaVotacion());
 	}
 
-
 	// ------------------------------------------------------------
 	// Metodos de eventos
 	// ------------------------------------------------------------

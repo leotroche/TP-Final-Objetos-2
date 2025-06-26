@@ -54,6 +54,12 @@ class PaginaWebTest {
 	}
 
 	@Test
+	void agregarMuestraDelegaLaNotificacionAlGestorDeEventos() {
+		web.agregarMuestra(muestra);
+		verify(gestorDeEventos).notificar(Evento.MUESTRA_CARGADA, null, muestra);
+	}
+
+	@Test
 	void subscribirZonaDeCoberturaDelegaLaSuscripcionAlGestorDeEventos() {
 		ZonaDeCobertura zona = mock(ZonaDeCobertura.class);
 		Evento evento = mock(Evento.class);

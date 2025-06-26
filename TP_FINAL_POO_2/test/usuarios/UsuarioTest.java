@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import muestras.Muestra;
 import muestras.Opinion;
+import usuarios.estados.EstadoBasico;
 import usuarios.estados.EstadoDeConocimiento;
 import usuarios.estados.EstadoEspecialista;
 import usuarios.estados.EstadoExperto;
@@ -105,15 +106,21 @@ class UsuarioTest {
 	}
 
 	@Test
-	void promocionaASiMismoAEstadoExpertoSiCumpleCondiciones() {
+	void promocionarSiCorrespondeSiCumpleLasCondiciones() {
 		Usuario usuario = new Usuario(false); // Estado inicial es Basico
 
-		// Simulamos que tiene suficientes envíos y opiniones
+		// Simulamos que tiene suficientes envíos con fecha válida
 		for (int i = 0; i < 10; i++) {
-			usuario.agregarMuestraEnviada(mock(Muestra.class));
+			Muestra muestraMock = mock(Muestra.class);
+			when(muestraMock.getFechaDeCreacion()).thenReturn(LocalDate.now().minusDays(5));
+			usuario.agregarMuestraEnviada(muestraMock);
 		}
+
+		// Simulamos opiniones con fecha válida
 		for (int i = 0; i < 20; i++) {
-			usuario.agregarOpinionDada(mock(Opinion.class));
+			Opinion opinionMock = mock(Opinion.class);
+			when(opinionMock.getFechaDeVotacion()).thenReturn(LocalDate.now().minusDays(5));
+			usuario.agregarOpinionDada(opinionMock);
 		}
 
 		usuario.promocionarSiCorresponde();
@@ -122,21 +129,51 @@ class UsuarioTest {
 	}
 
 	@Test
-	void noPromocionaASiMismoAEstadoExpertoSiNoCumpleCondiciones() {
-		Usuario usuario = new Usuario(false); // Estado inicial es Basico
+	void noPromocionaSiNoCumpleLos10Envios() {
+		Usuario usuario = new Usuario(false);
 
-		// Simulamos que no tiene suficientes envíos y opiniones
+		// Simulamos menos de 10 envíos en últimos 30 días
 		for (int i = 0; i < 5; i++) {
-			usuario.agregarMuestraEnviada(mock(Muestra.class));
+			Muestra muestra = mock(Muestra.class);
+			when(muestra.getFechaDeCreacion()).thenReturn(LocalDate.now().minusDays(5));
+			usuario.agregarMuestraEnviada(muestra);
 		}
-		for (int i = 0; i < 10; i++) {
-			usuario.agregarOpinionDada(mock(Opinion.class));
+
+		// Simulamos mas de 20 opiniones en últimos 30 días
+		for (int i = 0; i < 30; i++) {
+			Opinion opinion = mock(Opinion.class);
+			when(opinion.getFechaDeVotacion()).thenReturn(LocalDate.now().minusDays(5));
+			usuario.agregarOpinionDada(opinion);
 		}
 
 		usuario.promocionarSiCorresponde();
 
-		assertInstanceOf(usuarios.estados.EstadoBasico.class, usuario.getEstadoDeConocimiento());
+		assertInstanceOf(EstadoBasico.class, usuario.getEstadoDeConocimiento());
 	}
+
+	@Test
+	void noPromocionaSiNoCumpleLas20Opiniones() {
+		Usuario usuario = new Usuario(false);
+
+		// Simulamos mas de 10 envíos en últimos 30 días
+		for (int i = 0; i < 30; i++) {
+			Muestra muestra = mock(Muestra.class);
+			when(muestra.getFechaDeCreacion()).thenReturn(LocalDate.now().minusDays(5));
+			usuario.agregarMuestraEnviada(muestra);
+		}
+
+		// Simulamos menos de 20 opiniones en últimos 30 días
+		for (int i = 0; i < 5; i++) {
+			Opinion opinion = mock(Opinion.class);
+			when(opinion.getFechaDeVotacion()).thenReturn(LocalDate.now().minusDays(5));
+			usuario.agregarOpinionDada(opinion);
+		}
+
+		usuario.promocionarSiCorresponde();
+
+		assertInstanceOf(EstadoBasico.class, usuario.getEstadoDeConocimiento());
+	}
+
 
 	// ------------------------------------------------------------
 
@@ -175,42 +212,61 @@ class UsuarioTest {
 	}
 
 	@Test
-	void tieneAlmenosNOpinionesDadas() {
+	void opinionesDadasEnLosUltimosNDias() {
 		Usuario usuario = new Usuario(true);
 
-		usuario.agregarOpinionDada(mock(Opinion.class));
-		usuario.agregarOpinionDada(mock(Opinion.class));
-		usuario.agregarOpinionDada(mock(Opinion.class));
+		Opinion opinion1 = mock(Opinion.class);
+		Opinion opinion2 = mock(Opinion.class);
+		Opinion opinion3 = mock(Opinion.class);
 
-		assertTrue(usuario.tieneAlmenosNOpinionesDadas(3));
+		when(opinion1.getFechaDeVotacion()).thenReturn(LocalDate.now().minusDays(1));
+		when(opinion2.getFechaDeVotacion()).thenReturn(LocalDate.now().minusDays(5));
+		when(opinion3.getFechaDeVotacion()).thenReturn(LocalDate.now().minusDays(40)); // Fuera del rango
+
+		usuario.agregarOpinionDada(opinion1);
+		usuario.agregarOpinionDada(opinion2);
+		usuario.agregarOpinionDada(opinion3);
+
+		assertEquals(2, usuario.opinionesDadasEnLosUltimosNDias(30).size());
 	}
 
 	@Test
-	void noTieneAlmenosNOpinionesDadas() {
+	void tieneAlmenosNOpinionesDadasEnLosUltimosNDias() {
 		Usuario usuario = new Usuario(true);
 
-		usuario.agregarOpinionDada(mock(Opinion.class));
-		usuario.agregarOpinionDada(mock(Opinion.class));
+		Opinion opinion1 = mock(Opinion.class);
+		Opinion opinion2 = mock(Opinion.class);
+		Opinion opinion3 = mock(Opinion.class);
 
-		assertFalse(usuario.tieneAlmenosNOpinionesDadas(3));
+		when(opinion1.getFechaDeVotacion()).thenReturn(LocalDate.now().minusDays(1));
+		when(opinion2.getFechaDeVotacion()).thenReturn(LocalDate.now().minusDays(5));
+		when(opinion3.getFechaDeVotacion()).thenReturn(LocalDate.now().minusDays(40)); // Fuera del rango
+
+		usuario.agregarOpinionDada(opinion1);
+		usuario.agregarOpinionDada(opinion2);
+		usuario.agregarOpinionDada(opinion3);
+
+		assertTrue(usuario.tieneAlmenosNOpinionesDadasEnLosUltimosNDias(2, 30));
+		assertFalse(usuario.tieneAlmenosNOpinionesDadasEnLosUltimosNDias(3, 30));
 	}
 
 	@Test
-	void tieneAlMenosNEnviosRealizados() {
+	void tieneAlMenosNEnviosRealizadosEnLosUltimosNDias() {
 		Usuario usuario = new Usuario(true);
 
-		usuario.agregarMuestraEnviada(mock(Muestra.class));
-		usuario.agregarMuestraEnviada(mock(Muestra.class));
+		Muestra muestra1 = mock(Muestra.class);
+		Muestra muestra2 = mock(Muestra.class);
+		Muestra muestra3 = mock(Muestra.class);
 
-		assertTrue(usuario.tieneAlMenosNEnviosRealizados(2));
-	}
+		when(muestra1.getFechaDeCreacion()).thenReturn(LocalDate.now().minusDays(1));
+		when(muestra2.getFechaDeCreacion()).thenReturn(LocalDate.now().minusDays(5));
+		when(muestra3.getFechaDeCreacion()).thenReturn(LocalDate.now().minusDays(40)); // Fuera del rango
 
-	@Test
-	void noTieneAlMenosNEnviosRealizados() {
-		Usuario usuario = new Usuario(true);
+		usuario.agregarMuestraEnviada(muestra1);
+		usuario.agregarMuestraEnviada(muestra2);
+		usuario.agregarMuestraEnviada(muestra3);
 
-		usuario.agregarMuestraEnviada(mock(Muestra.class));
-
-		assertFalse(usuario.tieneAlMenosNEnviosRealizados(2));
+		assertTrue(usuario.tieneAlMenosNEnviosRealizadosEnLosUltimosNDias(2, 30));
+		assertFalse(usuario.tieneAlMenosNEnviosRealizadosEnLosUltimosNDias(3, 30));
 	}
 }

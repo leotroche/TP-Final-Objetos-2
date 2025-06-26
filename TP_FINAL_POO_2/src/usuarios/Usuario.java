@@ -76,13 +76,16 @@ public class Usuario {
 	public void promocionarSiCorresponde() {
 		boolean esEspecialista = this.getTieneConocimientoValido();
 
+		if (!esEspecialista &&
+				this.tieneAlMenosNEnviosRealizadosEnLosUltimosNDias(10, 30) &&
+				this.tieneAlmenosNOpinionesDadasEnLosUltimosNDias(20, 30)) {
 
-		if (!esEspecialista && this.tieneAlMenosNEnviosRealizados(10) && this.tieneAlmenosNOpinionesDadas(20)) {
 			this.setEstadoDeConocimiento(new EstadoExperto());
 		} else {
 			this.setEstadoDeConocimiento(new EstadoBasico());
 		}
 	}
+
 
 	// ------------------------------------------------------------
 
@@ -98,11 +101,17 @@ public class Usuario {
 				.toList();
 	}
 
-	public boolean tieneAlmenosNOpinionesDadas(int cantidad) {
-		return (this.getOpinionesDadas().size() >= cantidad);
+	public List<Opinion> opinionesDadasEnLosUltimosNDias(int cantidad) {
+		return this.getOpinionesDadas().stream()
+				.filter(o -> o.getFechaDeVotacion().isAfter(LocalDate.now().minusDays(cantidad)))
+				.toList();
 	}
 
-	public boolean tieneAlMenosNEnviosRealizados(int cantidad) {
-		return (this.getMuestrasEnviadas().size() >= cantidad);
+	public boolean tieneAlmenosNOpinionesDadasEnLosUltimosNDias(int cantidad, int dias) {
+		return opinionesDadasEnLosUltimosNDias(dias).size() >= cantidad;
+	}
+
+	public boolean tieneAlMenosNEnviosRealizadosEnLosUltimosNDias(int cantidad, int dias) {
+		return this.muestrasDeLosUltimosNDias(dias).size() >= cantidad;
 	}
 }

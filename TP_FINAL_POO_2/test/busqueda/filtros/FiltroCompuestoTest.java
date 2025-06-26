@@ -10,8 +10,6 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import busqueda.filtros.Filtro;
-import busqueda.filtros.FiltroCompuesto;
 import busqueda.filtros.logica.LogicaDeComposicion;
 import muestras.Muestra;
 

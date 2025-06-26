@@ -8,9 +8,6 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import busqueda.filtros.atributos.fechas.comparacion.ComparadorDeFechas;
-import busqueda.filtros.atributos.fechas.comparacion.ComparadorFechaAnterior;
-
 class ComparadorFechaAnteriorTest {
 	private ComparadorDeFechas comparador;
 

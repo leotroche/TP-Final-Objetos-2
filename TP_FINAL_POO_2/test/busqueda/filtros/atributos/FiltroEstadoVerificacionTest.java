@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import busqueda.filtros.Filtro;
-import busqueda.filtros.atributos.FiltroEstadoDeVerificacion;
 import muestras.Muestra;
 import muestras.estados.EstadoDeVerificacion;
 import muestras.estados.EstadoVerificado;

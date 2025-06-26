@@ -34,8 +34,10 @@ public class Muestra {
 		this.setFoto(foto);
 		this.setUbicacion(ubicacion);
 		this.setAutor(autor);
+		this.setTipoDeInsecto(tipoDeInsecto);
 		this.setFechaDeCreacion(LocalDate.now());
 		this.setGestorDeEventos(gestorDeEventos);
+
 		this.setEstadoDeVerificacion(new EstadoNoVerificado());
 		this.agregarOpinion(new Opinion(autor, tipoDeInsecto, false));
 	}
@@ -51,7 +53,7 @@ public class Muestra {
 	}
 
 	public TipoDeInsecto getTipoDeInsecto() {
-		return this.obtenerResultadoActual();
+		return this.tipoDeInsecto;
 	}
 
 	public void setTipoDeInsecto(TipoDeInsecto tipoDeInsecto) {
@@ -127,6 +129,7 @@ public class Muestra {
 
 		if (this.cantidadDeOpinionesConTipo(tipo) > 1) {
 			this.setEstadoDeVerificacion(new EstadoVerificado());
+			this.notificarZonasDeCobertura(Evento.MUESTRA_VALIDADA, null, this);
 		}
 	}
 
@@ -177,7 +180,7 @@ public class Muestra {
 		this.getGestorDeEventos().desuscribir(evento, zona);
 	}
 
-	public void notificarZonasDeCobertura(Evento evento, ZonaDeCobertura zona) {
+	public void notificarZonasDeCobertura(Evento evento, ZonaDeCobertura zona, Muestra muestra) {
 		this.getGestorDeEventos().notificar(evento, zona, this);
 	}
 }

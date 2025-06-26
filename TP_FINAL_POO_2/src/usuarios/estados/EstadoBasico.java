@@ -3,9 +3,9 @@ package usuarios.estados;
 import muestras.Muestra;
 import muestras.Opinion;
 import usuarios.Usuario;
-import web.PaginaWeb;
 
 public class EstadoBasico implements EstadoDeConocimiento {
+	@Override
 	public void opinarSobreMuestra(Usuario usuario, Muestra muestra, Opinion opinion) {
 		muestra.doAgregarOpinion(opinion);
 	}

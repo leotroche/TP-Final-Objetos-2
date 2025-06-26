@@ -11,8 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import busqueda.filtros.Filtro;
-import busqueda.filtros.logica.LogicaDeComposicion;
-import busqueda.filtros.logica.LogicaOr;
 import muestras.Muestra;
 
 class LogicaOrTest {

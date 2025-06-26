@@ -13,8 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import busqueda.filtros.Filtro;
-import busqueda.filtros.atributos.fechas.FiltroFecha;
-import busqueda.filtros.atributos.fechas.FiltroFechaDeUltimaVotacion;
 import busqueda.filtros.atributos.fechas.comparacion.ComparadorDeFechas;
 import muestras.Muestra;
 

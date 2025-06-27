@@ -11,6 +11,7 @@ import zonas.ZonaDeCobertura;
 public class PaginaWeb {
 	private ArrayList<Usuario> usuariosRegistrados= new ArrayList<>();
 	private ArrayList<Muestra> muestrasRegistradas = new ArrayList<>();
+	private List<ZonaDeCobertura> zonasDeCobertura = new ArrayList<>();
 
 	// ------------------------------------------------------------
 
@@ -34,14 +35,16 @@ public class PaginaWeb {
 	// Metodos de eventos
 	// ------------------------------------------------------------
 
-	public void subscribirZonaDeCobertura(Evento evento, ZonaDeCobertura zona) {
-		//
+	public void subscribirZonaDeCobertura(ZonaDeCobertura zona) {
+		if (!this.zonasDeCobertura.contains(zona)) {
+			this.zonasDeCobertura.add(zona);
+		}
 	}
 
-	public void desubscribirZonaDeCobertura(Evento evento, ZonaDeCobertura zona) {
+	public void desubscribirZonaDeCobertura(Evento evento,ZonaDeCobertura zona) {
 		//
 	}
-	public void notificarZonaDeCobertura(Evento evento, ZonaDeCobertura zona, Muestra muestra) {
+	public void notificarZonaDeCobertura(ZonaDeCobertura zona, Muestra muestra) {
 		//
 	}
 }

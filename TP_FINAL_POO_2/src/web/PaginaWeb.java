@@ -9,8 +9,8 @@ import usuarios.Usuario;
 import zonas.ZonaDeCobertura;
 
 public class PaginaWeb {
-	private ArrayList<Usuario> usuariosRegistrados= new ArrayList<>();
-	private ArrayList<Muestra> muestrasRegistradas = new ArrayList<>();
+	private List<Usuario> usuariosRegistrados= new ArrayList<>();
+	private List<Muestra> muestrasRegistradas = new ArrayList<>();
 	private List<ZonaDeCobertura> zonasDeCobertura = new ArrayList<>();
 
 	// ------------------------------------------------------------
@@ -30,6 +30,11 @@ public class PaginaWeb {
 	public void agregarMuestra(Muestra muestra) {
 		this.getMuestrasRegistradas().add(muestra);
 	}
+	
+	public void agregarZonaDeCobertura(ZonaDeCobertura zonaDeCobertura) {
+		this.zonasDeCobertura.add(zonaDeCobertura);
+	}
+	
 
 	// ------------------------------------------------------------
 	// Metodos de eventos

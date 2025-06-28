@@ -59,7 +59,7 @@ public class PaginaWeb {
 		for (ZonaDeCobertura zona: this.zonasDeCobertura) {
 			if (zona.perteneceALaZona(muestra)) {
 				muestra.suscribirZonaDeCobertura(zona);
-				this.notificarZonaDeCobertura(muestra);
+				zona.update(Evento.MUESTRA_CARGADA,muestra);
 			}
 		}
 	}

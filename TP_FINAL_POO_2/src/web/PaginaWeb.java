@@ -22,6 +22,10 @@ public class PaginaWeb {
 	public void agregarUsuario(Usuario usuario) {
 		this.usuariosRegistrados.add(usuario);
 	}
+	
+	public List<ZonaDeCobertura> getZonasDeCoberturas() {
+		return (this.zonasDeCobertura);
+	}
 
 	public List<Muestra> getMuestrasRegistradas() {
 		return this.muestrasRegistradas;
@@ -35,7 +39,8 @@ public class PaginaWeb {
 		this.zonasDeCobertura.add(zonaDeCobertura);
 	}
 	
-
+	
+	
 	// ------------------------------------------------------------
 	// Metodos de eventos
 	// ------------------------------------------------------------

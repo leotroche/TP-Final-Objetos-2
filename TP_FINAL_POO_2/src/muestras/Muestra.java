@@ -129,7 +129,7 @@ public class Muestra {
 
 		if (this.cantidadDeOpinionesConTipo(tipo) > 1) {
 			this.setEstadoDeVerificacion(new EstadoVerificado());
-			this.notificarZonasDeCobertura(Evento.MUESTRA_VALIDADA, null, this);
+			this.notificarZonasDeCobertura(Evento.MUESTRA_VALIDADA,this);
 		}
 	}
 
@@ -180,7 +180,9 @@ public class Muestra {
 		this.zonasDeCobertura.remove(zona);
 	}
 
-	public void notificarZonasDeCobertura(Evento evento, ZonaDeCobertura zona, Muestra muestra) {
-		//
+	public void notificarZonasDeCobertura(Evento evento, Muestra muestra) {
+		for (ZonaDeCobertura zona : this.zonasDeCobertura) {
+			zona.update(Evento.MUESTRA_VALIDADA,muestra);
+		}
 	}
 }

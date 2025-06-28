@@ -26,6 +26,7 @@ public class Muestra {
 
 	private List<Opinion> opiniones = new ArrayList<>();
 	private EstadoDeVerificacion estadoDeVerificacion;
+	private List<ZonaDeCobertura> zonasDeCobertura;
 
 	public Muestra(String foto, Ubicacion ubicacion, Usuario autor, TipoDeInsecto tipoDeInsecto,
 			GestorDeEventos gestorDeEventos) {
@@ -83,6 +84,9 @@ public class Muestra {
 		this.fechaDeCreacion = fecha;
 	}
 
+	public void setZonasDeCobertura(ZonaDeCobertura zona) {
+		this.zonasDeCobertura.add(zona);
+	}
 	// ------------------------------------------------------------
 	// Metodos de estado de verificacion
 	// ------------------------------------------------------------

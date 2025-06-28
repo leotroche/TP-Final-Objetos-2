@@ -176,8 +176,8 @@ public class Muestra {
 		this.zonasDeCobertura.add(zona);
 	}
 
-	public void desuscribirZonaDeCobertura(Evento evento, ZonaDeCobertura zona) {
-		//
+	public void desuscribirZonaDeCobertura(ZonaDeCobertura zona) {
+		this.zonasDeCobertura.remove(zona);
 	}
 
 	public void notificarZonasDeCobertura(Evento evento, ZonaDeCobertura zona, Muestra muestra) {

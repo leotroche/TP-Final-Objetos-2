@@ -55,8 +55,13 @@ public class PaginaWeb {
 		this.zonasDeCobertura.remove(zona);
 	}
 	
-	public void notificarZonaDeCobertura(ZonaDeCobertura zona, Muestra muestra) {
-		//
+	public void notificarZonaDeCobertura(Muestra muestra) {
+		for (ZonaDeCobertura zona: this.zonasDeCobertura) {
+			if (zona.perteneceALaZona(muestra)) {
+				muestra.suscribirZonaDeCobertura(zona);
+				this.notificarZonaDeCobertura(muestra);
+			}
+		}
 	}
 }
 

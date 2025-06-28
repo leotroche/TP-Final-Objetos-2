@@ -172,8 +172,8 @@ public class Muestra {
 	// Metodos de eventos
 	// ------------------------------------------------------------
 
-	public void suscribirZonaDeCobertura(Evento evento, ZonaDeCobertura zona) {
-		//
+	public void suscribirZonaDeCobertura(ZonaDeCobertura zona) {
+		this.zonasDeCobertura.add(zona);
 	}
 
 	public void desuscribirZonaDeCobertura(Evento evento, ZonaDeCobertura zona) {

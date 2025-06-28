@@ -84,9 +84,14 @@ public class Muestra {
 		this.fechaDeCreacion = fecha;
 	}
 
+	public List<ZonaDeCobertura> getZonasDeCobertura(){
+		return this.zonasDeCobertura;
+	}
+	
 	public void setZonasDeCobertura(ZonaDeCobertura zona) {
 		this.zonasDeCobertura.add(zona);
 	}
+	
 	// ------------------------------------------------------------
 	// Metodos de estado de verificacion
 	// ------------------------------------------------------------

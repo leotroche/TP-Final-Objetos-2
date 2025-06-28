@@ -21,7 +21,6 @@ public class Muestra {
 	private Ubicacion ubicacion;
 	private Usuario autor;
 	private TipoDeInsecto tipoDeInsecto;
-	private GestorDeEventos gestorDeEventos;
 
 	private LocalDate fechaDeCreacion;
 
@@ -36,7 +35,6 @@ public class Muestra {
 		this.setAutor(autor);
 		this.setTipoDeInsecto(tipoDeInsecto);
 		this.setFechaDeCreacion(LocalDate.now());
-		this.setGestorDeEventos(gestorDeEventos);
 
 		this.setEstadoDeVerificacion(new EstadoNoVerificado());
 		this.agregarOpinion(new Opinion(autor, tipoDeInsecto, false));
@@ -76,13 +74,6 @@ public class Muestra {
 		this.autor = usuario;
 	}
 
-	private GestorDeEventos getGestorDeEventos() {
-		return this.gestorDeEventos;
-	}
-
-	private void setGestorDeEventos(GestorDeEventos gestorDeEventos) {
-		this.gestorDeEventos = gestorDeEventos;
-	}
 
 	public LocalDate getFechaDeCreacion() {
 		return this.fechaDeCreacion;
@@ -173,14 +164,14 @@ public class Muestra {
 	// ------------------------------------------------------------
 
 	public void suscribirZonaDeCobertura(Evento evento, ZonaDeCobertura zona) {
-		this.getGestorDeEventos().suscribir(evento, zona);
+		//
 	}
 
 	public void desuscribirZonaDeCobertura(Evento evento, ZonaDeCobertura zona) {
-		this.getGestorDeEventos().desuscribir(evento, zona);
+		//
 	}
 
 	public void notificarZonasDeCobertura(Evento evento, ZonaDeCobertura zona, Muestra muestra) {
-		this.getGestorDeEventos().notificar(evento, zona, this);
+		//
 	}
 }

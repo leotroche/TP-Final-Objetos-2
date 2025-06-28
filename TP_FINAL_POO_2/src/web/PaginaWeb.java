@@ -51,9 +51,10 @@ public class PaginaWeb {
 		}
 	}
 
-	public void desubscribirZonaDeCobertura(Evento evento,ZonaDeCobertura zona) {
-		//
+	public void desubscribirZonaDeCobertura(ZonaDeCobertura zona) {
+		this.zonasDeCobertura.remove(zona);
 	}
+	
 	public void notificarZonaDeCobertura(ZonaDeCobertura zona, Muestra muestra) {
 		//
 	}

@@ -1,7 +1,6 @@
-package gestores.funcionalidades;
+package organizaciones;
 
 import muestras.Muestra;
-import organizaciones.Organizacion;
 import zonas.ZonaDeCobertura;
 
 public interface FuncionalidadExterna {

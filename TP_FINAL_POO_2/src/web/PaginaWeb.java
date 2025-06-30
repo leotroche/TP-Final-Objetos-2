@@ -34,7 +34,7 @@ public class PaginaWeb {
 	public void agregarMuestra(Muestra muestra) {
 		this.getMuestrasRegistradas().add(muestra);
 		for(ZonaDeCobertura zona : this.getZonasDeCoberturaRegistradas()) {
-			if (zona.procesarMuestra(muestra)) {
+			if (zona.procesarNuevaMuestra(muestra)) {
 				
 			}
 		}

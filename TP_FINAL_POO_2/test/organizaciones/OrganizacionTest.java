@@ -1,16 +1,16 @@
 package organizaciones;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import eventos.Evento;
-import gestores.funcionalidades.FuncionalidadExterna;
-import gestores.funcionalidades.GestorDeFuncionalidades;
 import muestras.Muestra;
+import organizaciones.funcionalidades.FuncionalidadExterna;
 import ubicaciones.Ubicacion;
 import zonas.ZonaDeCobertura;
 
@@ -20,51 +20,114 @@ class OrganizacionTest {
 	private TipoDeOrganizacion tipoDeOrganizacion;
 	private Ubicacion ubicacion;
 	private int cantEmpleados;
-	private GestorDeFuncionalidades gestorDeFuncionalidades;
 
 	@BeforeEach
 	void setUp() {
 		tipoDeOrganizacion = mock(TipoDeOrganizacion.class);
 		ubicacion = mock(Ubicacion.class);
 		cantEmpleados = 10;
-		gestorDeFuncionalidades = mock(GestorDeFuncionalidades.class);
 
-		organizacion = new Organizacion(tipoDeOrganizacion, ubicacion, cantEmpleados, gestorDeFuncionalidades);
+		organizacion = new Organizacion(tipoDeOrganizacion, ubicacion, cantEmpleados);
 	}
 
+	// ------------------------------------------------------------
+
 	@Test
-	void getTipoDeOrganizacion() {
+	void getTipoDeOrganizacionTest() {
 		assertEquals(tipoDeOrganizacion, organizacion.getTipoDeOrganizacion());
 	}
 
 	@Test
-	void getUbicacion() {
+	void getUbicacionTest() {
 		assertEquals(ubicacion, organizacion.getUbicacion());
 	}
 
 	@Test
-	void getCantEmpleados() {
+	void getCantEmpleadosTest() {
 		assertEquals(cantEmpleados, organizacion.getCantEmpleados());
 	}
 
+	// ------------------------------------------------------------
+
 	@Test
-	void cambiarFuncionalidadParaDelegaAlGestorDeFuncionalidades() {
-		Evento evento = mock(Evento.class);
-		FuncionalidadExterna funcionalidad = mock(FuncionalidadExterna.class);
-
-		organizacion.cambiarFuncionalidadPara(evento,funcionalidad);
-
-		verify(gestorDeFuncionalidades).cambiarPara(evento, funcionalidad);
+	void getFuncionalidadMuestraCargadaPorDefectoEsNula() {
+		assertNull(organizacion.getFuncionalidadMuestraCargada());
 	}
 
 	@Test
-	void updateDelegaLaEjecucionDeLaFuncionalidadEnElGestorDeFuncionalidades() {
-		Evento evento = mock(Evento.class);
+	void getFuncionalidadMuestraValidadaPorDefectoEsNula() {
+		assertNull(organizacion.getFuncionalidadMuestraValidada());
+	}
+
+	// ------------------------------------------------------------
+
+	@Test
+	void setFuncionalidadMuestraCargadaCambiaLaFuncionalidad() {
+		FuncionalidadExterna funcionalidad = mock(FuncionalidadExterna.class);
+
+		organizacion.setFuncionalidadMuestraCargada(funcionalidad);
+
+		assertEquals(funcionalidad, organizacion.getFuncionalidadMuestraCargada());
+	}
+
+	@Test
+	void setFuncionalidadMuestraValidadaCambiaLaFuncionalidad() {
+		FuncionalidadExterna funcionalidad = mock(FuncionalidadExterna.class);
+
+		organizacion.setFuncionalidadMuestraValidada(funcionalidad);
+
+		assertEquals(funcionalidad, organizacion.getFuncionalidadMuestraValidada());
+	}
+
+	// ------------------------------------------------------------
+
+	@Test
+	void updateMuestraCargadaNoEjecutaFuncionalidadSiNoEstaCargada() {
 		ZonaDeCobertura zonaDeCobertura = mock(ZonaDeCobertura.class);
 		Muestra muestra = mock(Muestra.class);
+		FuncionalidadExterna funcionalidad = mock(FuncionalidadExterna.class);
 
-		organizacion.update(evento, zonaDeCobertura, muestra);
+		organizacion.updateMuestraCargada(zonaDeCobertura, muestra);
 
-		verify(gestorDeFuncionalidades).ejecutarPara(evento, organizacion, zonaDeCobertura, muestra);
+		verify(funcionalidad, never()).nuevoEvento(organizacion, zonaDeCobertura, muestra);
+	}
+
+	@Test
+	void updateMuestraCargadaEjecutaFuncionalidadCargada() {
+		ZonaDeCobertura zonaDeCobertura = mock(ZonaDeCobertura.class);
+		Muestra muestra = mock(Muestra.class);
+		FuncionalidadExterna funcionalidad = mock(FuncionalidadExterna.class);
+
+		organizacion.setFuncionalidadMuestraCargada(funcionalidad);
+
+		organizacion.updateMuestraCargada(zonaDeCobertura, muestra);
+
+		verify(funcionalidad).nuevoEvento(organizacion, zonaDeCobertura, muestra);
+	}
+
+	// ------------------------------------------------------------
+
+	@Test
+	void updateMuestraValidadaNoEjecutaFuncionalidadSiNoEstaCargada() {
+		ZonaDeCobertura zonaDeCobertura = mock(ZonaDeCobertura.class);
+		Muestra muestra = mock(Muestra.class);
+		FuncionalidadExterna funcionalidad = mock(FuncionalidadExterna.class);
+
+		organizacion.updateMuestraValidada(zonaDeCobertura, muestra);
+
+		verify(funcionalidad, never()).nuevoEvento(organizacion, zonaDeCobertura, muestra);
+	}
+
+	@Test
+	void updateMuestraValidadaEjecutaFuncionalidadCargada() {
+		ZonaDeCobertura zonaDeCobertura = mock(ZonaDeCobertura.class);
+		Muestra muestra = mock(Muestra.class);
+		FuncionalidadExterna funcionalidad = mock(FuncionalidadExterna.class);
+
+		organizacion.setFuncionalidadMuestraValidada(funcionalidad);
+
+		organizacion.updateMuestraValidada(zonaDeCobertura, muestra);
+
+		verify(funcionalidad).nuevoEvento(organizacion, zonaDeCobertura, muestra);
 	}
 }

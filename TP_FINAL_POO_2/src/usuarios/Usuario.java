@@ -62,11 +62,22 @@ public class Usuario {
 	// ------------------------------------------------------------
 
 	public void opinarSobreMuestra(Muestra muestra, Opinion opinion) {
-		this.getEstadoDeConocimiento().opinarSobreMuestra(this, muestra, opinion);
-		this.agregarOpinionDada(opinion);
-		this.promocionarSiCorresponde();
+		if (this.muestrasYaOpinadas().contains(muestra)) {
+			this.getEstadoDeConocimiento().opinarSobreMuestra(this, muestra, opinion);
+			this.agregarOpinionDada(opinion);
+			this.promocionarSiCorresponde();
+		}
 	}
 
+	public List<Muestra> muestrasYaOpinadas() {
+		return this.getMuestrasEnviadas().stream()
+		        .filter(muestra -> 
+		            muestra.getOpiniones().stream()
+		                .noneMatch(opinion -> opinion.getAutor().equals(this))
+		        )
+		        .toList();
+	}
+	
 	public void opinarSobreMuestraEnProceso(Muestra muestra, Opinion opinion) {
 		this.getEstadoDeConocimiento().opinarSobreMuestraEnProceso(this, muestra, opinion);
 		this.agregarOpinionDada(opinion);
@@ -85,7 +96,7 @@ public class Usuario {
 			this.setEstadoDeConocimiento(new EstadoBasico());
 		}
 	}
-
+	
 
 	// ------------------------------------------------------------
 

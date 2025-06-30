@@ -23,7 +23,7 @@ public class PaginaWeb {
 		this.usuariosRegistrados.add(usuario);
 	}
 	
-	public List<ZonaDeCobertura> getZonasDeCoberturas() {
+	public List<ZonaDeCobertura> getZonasDeCoberturaRegistradas() {
 		return (this.zonasDeCobertura);
 	}
 
@@ -33,35 +33,19 @@ public class PaginaWeb {
 
 	public void agregarMuestra(Muestra muestra) {
 		this.getMuestrasRegistradas().add(muestra);
+		for(ZonaDeCobertura zona : this.getZonasDeCoberturaRegistradas()) {
+			if (zona.procesarMuestra(muestra)) {
+				
+			}
+		}
 	}
 	
-	public void agregarZonaDeCobertura(ZonaDeCobertura zonaDeCobertura) {
-		this.zonasDeCobertura.add(zonaDeCobertura);
-	}
-	
-	
-	
-	// ------------------------------------------------------------
-	// Metodos de eventos
-	// ------------------------------------------------------------
 
-	public void subscribirZonaDeCobertura(ZonaDeCobertura zona) {
+	public void agregarZonaDeCobertura(ZonaDeCobertura zona) {
 		if (!this.zonasDeCobertura.contains(zona)) {
 			this.zonasDeCobertura.add(zona);
 		}
 	}
-
-	public void desubscribirZonaDeCobertura(ZonaDeCobertura zona) {
-		this.zonasDeCobertura.remove(zona);
-	}
 	
-	public void notificarZonaDeCobertura(Muestra muestra) {
-		for (ZonaDeCobertura zona: this.zonasDeCobertura) {
-			if (zona.perteneceALaZona(muestra)) {
-				muestra.suscribirZonaDeCobertura(zona);
-				zona.update(Evento.MUESTRA_CARGADA,muestra);
-			}
-		}
-	}
 }
 

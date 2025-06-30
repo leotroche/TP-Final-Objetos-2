@@ -1,15 +1,11 @@
 package web;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import eventos.Evento;
-import gestores.eventos.GestorDeEventos;
 import muestras.Muestra;
 import usuarios.Usuario;
 import zonas.ZonaDeCobertura;
@@ -17,18 +13,16 @@ import zonas.ZonaDeCobertura;
 class PaginaWebTest {
 	private PaginaWeb web;
 
-	private GestorDeEventos gestorDeEventos;
 	private Usuario usuario;
 	private Muestra muestra;
 
 
 	@BeforeEach
 	void setUp() {
-		gestorDeEventos = mock(GestorDeEventos.class);
 		muestra = mock(Muestra.class);
 		usuario = mock(Usuario.class);
 
-		web = new PaginaWeb(gestorDeEventos);
+		web = new PaginaWeb();
 	}
 
 	@Test
@@ -54,39 +48,37 @@ class PaginaWebTest {
 	}
 
 	@Test
-	void agregarMuestraDelegaLaNotificacionAlGestorDeEventos() {
+	void noSePuedeAgregarUnaZonaDeCoberturaQueYaEsteEnLaPagina() {
+		ZonaDeCobertura zona = mock(ZonaDeCobertura.class);
+		
+		web.agregarZonaDeCobertura(zona);
+		web.agregarZonaDeCobertura(zona);
+
+		assertEquals(1, web.getZonasDeCoberturaRegistradas().size());
+	}
+
+	@Test
+	void agregarMuestraAgregaALaZonaDeCoberturaDondePertenescan() {
+		ZonaDeCobertura zona = mock(ZonaDeCobertura.class);
+		
+		when(zona.perteneceALaZona(muestra)).thenReturn(true);
+		
+		web.agregarZonaDeCobertura(zona);
 		web.agregarMuestra(muestra);
-		verify(gestorDeEventos).notificar(Evento.MUESTRA_CARGADA, null, muestra);
+		
+		verify(zona, times(1)).procesarNuevaMuestra(muestra);
 	}
 
 	@Test
-	void subscribirZonaDeCoberturaDelegaLaSuscripcionAlGestorDeEventos() {
+	void agregarMuestraNoSeAgregaALaZonaDeCoberturaDeLaPagina() {
 		ZonaDeCobertura zona = mock(ZonaDeCobertura.class);
-		Evento evento = mock(Evento.class);
-
-		web.subscribirZonaDeCobertura(evento, zona);
-
-		verify(gestorDeEventos).suscribir(evento, zona);
-	}
-
-	@Test
-	void desubscribirZonaDeCoberturaDelegaLaDesuscripcionAlGestorDeEventos() {
-		ZonaDeCobertura zona = mock(ZonaDeCobertura.class);
-		Evento evento = mock(Evento.class);
-
-		web.desubscribirZonaDeCobertura(evento, zona);
-
-		verify(gestorDeEventos).desuscribir(evento, zona);
-	}
-
-	@Test
-	void notificarZonaDeCoberturaDelegaLaNotificacionAlGestorDeEventos() {
-		ZonaDeCobertura zona = mock(ZonaDeCobertura.class);
-		Evento evento = mock(Evento.class);
-
-		web.notificarZonaDeCobertura(evento, zona, muestra);
-
-		verify(gestorDeEventos).notificar(evento, zona, muestra);
+		
+		when(zona.perteneceALaZona(muestra)).thenReturn(false);
+		
+		web.agregarZonaDeCobertura(zona);
+		web.agregarMuestra(muestra);
+		
+		verify(zona, never()).procesarNuevaMuestra(muestra);
 	}
 }
 

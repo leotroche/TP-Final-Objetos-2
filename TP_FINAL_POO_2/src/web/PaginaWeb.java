@@ -3,7 +3,6 @@ package web;
 import java.util.ArrayList;
 import java.util.List;
 
-import eventos.Evento;
 import muestras.Muestra;
 import usuarios.Usuario;
 import zonas.ZonaDeCobertura;
@@ -34,8 +33,8 @@ public class PaginaWeb {
 	public void agregarMuestra(Muestra muestra) {
 		this.getMuestrasRegistradas().add(muestra);
 		for(ZonaDeCobertura zona : this.getZonasDeCoberturaRegistradas()) {
-			if (zona.procesarNuevaMuestra(muestra)) {
-				
+			if (zona.perteneceALaZona(muestra)) {
+				zona.procesarNuevaMuestra(muestra);
 			}
 		}
 	}

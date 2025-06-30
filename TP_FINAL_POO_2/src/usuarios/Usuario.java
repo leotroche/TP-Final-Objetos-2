@@ -62,7 +62,7 @@ public class Usuario {
 	// ------------------------------------------------------------
 
 	public void opinarSobreMuestra(Muestra muestra, Opinion opinion) {
-		if (this.muestrasYaOpinadas().contains(muestra)) {
+		if (!this.muestrasYaOpinadas().contains(muestra)) {
 			this.getEstadoDeConocimiento().opinarSobreMuestra(this, muestra, opinion);
 			this.agregarOpinionDada(opinion);
 			this.promocionarSiCorresponde();

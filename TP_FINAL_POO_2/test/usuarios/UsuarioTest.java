@@ -4,12 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -102,6 +100,22 @@ class UsuarioTest {
 
 		verify(estado).opinarSobreMuestraEnProceso(usuario, muestra, opinion);
 		verify(usuario).promocionarSiCorresponde();
+
+	}
+	
+	@Test
+	void noPuedeOpinarDeLaMismaMuestra2Veces() {
+		Usuario usuario = spy(new Usuario(true));
+		EstadoDeConocimiento estado = mock(EstadoDeConocimiento.class);
+		usuario.setEstadoDeConocimiento(estado);
+		
+		usuario.opinarSobreMuestraEnProceso(muestra, opinion);
+		
+		verify(estado).opinarSobreMuestraEnProceso(usuario, muestra, opinion);
+
+		usuario.opinarSobreMuestraEnProceso(muestra, opinion);
+
+		verify(estado, times(1)).opinarSobreMuestraEnProceso(usuario, muestra, opinion);
 
 	}
 
@@ -268,5 +282,36 @@ class UsuarioTest {
 
 		assertTrue(usuario.tieneAlMenosNEnviosRealizadosEnLosUltimosNDias(2, 30));
 		assertFalse(usuario.tieneAlMenosNEnviosRealizadosEnLosUltimosNDias(3, 30));
+	}
+	
+	@Test
+	void testFiltraMuestrasYaOpinadas() {
+	    Usuario usuario = new Usuario(true);
+
+	    Muestra muestra1 = mock(Muestra.class);
+	    Muestra muestra2 = mock(Muestra.class);
+	    Muestra muestra3 = mock(Muestra.class);
+
+	    Opinion opinion1 = mock(Opinion.class);
+	    Opinion opinion2 = mock(Opinion.class);
+	    Opinion opinion3 = mock(Opinion.class);
+
+	    when(opinion1.getAutor()).thenReturn(usuario);
+	    when(opinion2.getAutor()).thenReturn(usuario);
+	    when(opinion3.getAutor()).thenReturn(mock(Usuario.class));
+
+	    when(muestra1.getOpiniones()).thenReturn(List.of(opinion1));
+	    when(muestra2.getOpiniones()).thenReturn(List.of(opinion2));
+	    when(muestra3.getOpiniones()).thenReturn(List.of(opinion3));
+
+	    usuario.agregarMuestraEnviada(muestra1);
+	    usuario.agregarMuestraEnviada(muestra2);
+	    usuario.agregarMuestraEnviada(muestra3);
+
+	    List<Muestra> muestrasOpinadas = usuario.muestrasYaOpinadas();
+
+	    assertEquals(1, muestrasOpinadas.size());
+	    assertTrue(muestrasOpinadas.contains(muestra3));
+
 	}
 }

@@ -15,26 +15,26 @@ import ubicaciones.Ubicacion;
 import usuarios.Usuario;
 
 public class Muestra implements SubjectMuestra {
-private String foto;
-private Ubicacion ubicacion;
-private Usuario autor;
-private TipoDeInsecto tipoDeInsecto;
-private LocalDate fechaDeCreacion;
+	private String foto;
+	private Ubicacion ubicacion;
+	private Usuario autor;
+	private TipoDeInsecto tipoDeInsecto;
+	private LocalDate fechaDeCreacion;
 
-private List<Opinion> opiniones = new ArrayList<>();
-private List<ObserverMuestra> observadoresDeMuestraValidada = new ArrayList<>();
-private EstadoDeVerificacion estadoDeVerificacion;
+	private List<Opinion> opiniones = new ArrayList<>();
+	private List<ObserverMuestra> observadoresDeMuestraValidada = new ArrayList<>();
+	private EstadoDeVerificacion estadoDeVerificacion;
 
-public Muestra(String foto, Ubicacion ubicacion, Usuario autor, TipoDeInsecto tipoDeInsecto) {
-this.setFoto(foto);
-this.setUbicacion(ubicacion);
-this.setAutor(autor);
-this.setTipoDeInsecto(tipoDeInsecto);
-this.setFechaDeCreacion(LocalDate.now());
+	public Muestra(String foto, Ubicacion ubicacion, Usuario autor, TipoDeInsecto tipoDeInsecto) {
+		this.setFoto(foto);
+		this.setUbicacion(ubicacion);
+		this.setAutor(autor);
+		this.setTipoDeInsecto(tipoDeInsecto);
+		this.setFechaDeCreacion(LocalDate.now());
 
-this.setEstadoDeVerificacion(new EstadoNoVerificado());
-this.agregarOpinion(new Opinion(autor, tipoDeInsecto, false));
-}
+		this.setEstadoDeVerificacion(new EstadoNoVerificado());
+		this.agregarOpinion(new Opinion(autor, tipoDeInsecto, false));
+	}
 
 	// ------------------------------------------------------------
 

@@ -22,22 +22,22 @@ class OpinionTest {
 	}
 
 	@Test
-	void getNombreAutor() {
+	void getAutorTest() {
 		assertEquals(usuario, opinion.getAutor());
 	}
 
 	@Test
-	void getTipoInsecto() {
+	void getTipoDeInsectoTest() {
 		assertEquals(tipoDeInsecto, opinion.getTipoDeInsecto());
 	}
 
 	@Test
-	void getFechaDeVotacion() {
-		assertEquals(LocalDate.now(), opinion.getFechaDeVotacion());
+	void getEsOpinionDeExpertoTest() {
+		assertTrue(opinion.getEsOpinionDeExperto());
 	}
 
 	@Test
-	void getEsUnExperto() {
-		assertTrue(opinion.getEsUnExperto());
+	void getFechaDeVotacionTest() {
+		assertEquals(LocalDate.now(), opinion.getFechaDeVotacion());
 	}
 }

@@ -1,12 +1,12 @@
 package organizaciones;
 
-import gestores.eventos.Observer;
 import muestras.Muestra;
 import organizaciones.funcionalidades.FuncionalidadExterna;
 import ubicaciones.Ubicacion;
 import zonas.ZonaDeCobertura;
+import zonas.observer.ObserverZonaDeCobertura;
 
-public class Organizacion implements Observer {
+public class Organizacion implements ObserverZonaDeCobertura {
 	private TipoDeOrganizacion tipoDeOrganizacion;
 	private Ubicacion ubicacion;
 	private int cantEmpleados;

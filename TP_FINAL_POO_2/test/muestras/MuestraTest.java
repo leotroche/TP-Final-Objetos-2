@@ -25,12 +25,12 @@ import ubicaciones.Ubicacion;
 import usuarios.Usuario;
 
 class MuestraTest {
-private Muestra muestra;
+	private Muestra muestra;
 
-private String foto;
-private Ubicacion ubicacion;
-private Usuario autor;
-private TipoDeInsecto tipoDeInsecto;
+	private String foto;
+	private Ubicacion ubicacion;
+	private Usuario autor;
+	private TipoDeInsecto tipoDeInsecto;
 
 	@BeforeEach
 	void setUp() {

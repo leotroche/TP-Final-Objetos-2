@@ -5,10 +5,10 @@ import java.time.LocalDate;
 import usuarios.Usuario;
 
 public class Opinion {
-private Usuario autor;
-private TipoDeInsecto tipoDeInsecto;
-private LocalDate fechaDeVotacion;
-private boolean esOpinionDeExperto;
+	private Usuario autor;
+	private TipoDeInsecto tipoDeInsecto;
+	private LocalDate fechaDeVotacion;
+	private boolean esOpinionDeExperto;
 
 	public Opinion(Usuario usuario, TipoDeInsecto tipoDeInsecto, boolean esOpinionDeExperto) {
 		this.setAutor(usuario);

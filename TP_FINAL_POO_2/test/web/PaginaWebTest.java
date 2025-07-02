@@ -8,8 +8,6 @@ import static org.mockito.Mockito.verify;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import eventos.Evento;
-import gestores.eventos.GestorDeEventos;
 import muestras.Muestra;
 import usuarios.Usuario;
 import zonas.ZonaDeCobertura;
@@ -17,76 +15,95 @@ import zonas.ZonaDeCobertura;
 class PaginaWebTest {
 	private PaginaWeb web;
 
-	private GestorDeEventos gestorDeEventos;
-	private Usuario usuario;
-	private Muestra muestra;
-
-
 	@BeforeEach
 	void setUp() {
-		gestorDeEventos = mock(GestorDeEventos.class);
-		muestra = mock(Muestra.class);
-		usuario = mock(Usuario.class);
-
-		web = new PaginaWeb(gestorDeEventos);
+		web = new PaginaWeb();
 	}
 
+	// ------------------------------------------------------------
+
 	@Test
-	void unaPaginaWebIncialmenteNoTieneUsuarios() {
+	void unaPaginaWebIncialmenteNoTieneUsuariosRegistrados() {
 		assertTrue(web.getUsuariosRegistrados().isEmpty());
 	}
 
 	@Test
-	void unaPaginaWebIncialmenteNoTieneMuestras() {
-		assertTrue(web.getMuestrasRegistradas().isEmpty());
-	}
-
-	@Test
 	void agregarUsuarioAgregaUnUsuarioAlaPaginaWeb() {
+		Usuario usuario = mock(Usuario.class);
+
 		web.agregarUsuario(usuario);
 		assertEquals(1, web.getUsuariosRegistrados().size());
 	}
 
 	@Test
+	void agregarUsuarioNoAgregaElMismoUsuarioDosVeces() {
+		Usuario usuario = mock(Usuario.class);
+
+		web.agregarUsuario(usuario);
+		web.agregarUsuario(usuario);
+		assertEquals(1, web.getUsuariosRegistrados().size());
+	}
+
+	// ------------------------------------------------------------
+
+	@Test
+	void unaPaginaWebIncialmenteNoTieneMuestrasRegistradas() {
+		assertTrue(web.getMuestrasRegistradas().isEmpty());
+	}
+
+	@Test
 	void agregarMuestraAgregaUnaMuestraAlaPaginaWeb() {
+		Muestra muestra = mock(Muestra.class);
+
 		web.agregarMuestra(muestra);
 		assertEquals(1, web.getMuestrasRegistradas().size());
 	}
 
 	@Test
-	void agregarMuestraDelegaLaNotificacionAlGestorDeEventos() {
+	void agregarMuestraNoAgregaLaMismaMuestraDosVeces() {
+		Muestra muestra = mock(Muestra.class);
+
 		web.agregarMuestra(muestra);
-		verify(gestorDeEventos).notificar(Evento.MUESTRA_CARGADA, null, muestra);
+		web.agregarMuestra(muestra);
+		assertEquals(1, web.getMuestrasRegistradas().size());
 	}
 
 	@Test
-	void subscribirZonaDeCoberturaDelegaLaSuscripcionAlGestorDeEventos() {
+	void agregarMuestraDelegaElProcesamientoDeLaMuestraALasZonasDeCoberturaRegistradas() {
 		ZonaDeCobertura zona = mock(ZonaDeCobertura.class);
-		Evento evento = mock(Evento.class);
+		Muestra muestra = mock(Muestra.class);
 
-		web.subscribirZonaDeCobertura(evento, zona);
+		web.agregarZonaDeCobertura(zona);
+		web.agregarMuestra(muestra);
 
-		verify(gestorDeEventos).suscribir(evento, zona);
+		assertEquals(1, web.getZonasDeCoberturaRegistradas().size());
+		assertEquals(1, web.getMuestrasRegistradas().size());
+
+		// Verificamos que la zona procese la muestra
+		verify(zona).procesarNuevaMuestra(muestra);
+	}
+
+	// ------------------------------------------------------------
+
+	@Test
+	void unaPaginaWebIncialmenteNoTieneZonasDeCoberturaRegistradas() {
+		assertTrue(web.getZonasDeCoberturaRegistradas().isEmpty());
 	}
 
 	@Test
-	void desubscribirZonaDeCoberturaDelegaLaDesuscripcionAlGestorDeEventos() {
+	void agregarZonaDeCoberturaAgregaUnaZonaDeCoberturaAlaPaginaWeb() {
 		ZonaDeCobertura zona = mock(ZonaDeCobertura.class);
-		Evento evento = mock(Evento.class);
 
-		web.desubscribirZonaDeCobertura(evento, zona);
-
-		verify(gestorDeEventos).desuscribir(evento, zona);
+		web.agregarZonaDeCobertura(zona);
+		assertEquals(1, web.getZonasDeCoberturaRegistradas().size());
 	}
 
 	@Test
-	void notificarZonaDeCoberturaDelegaLaNotificacionAlGestorDeEventos() {
+	void agregarZonaDeCoberturaNoAgregaLaMismaZonaDosVeces() {
 		ZonaDeCobertura zona = mock(ZonaDeCobertura.class);
-		Evento evento = mock(Evento.class);
 
-		web.notificarZonaDeCobertura(evento, zona, muestra);
-
-		verify(gestorDeEventos).notificar(evento, zona, muestra);
+		web.agregarZonaDeCobertura(zona);
+		web.agregarZonaDeCobertura(zona);
+		assertEquals(1, web.getZonasDeCoberturaRegistradas().size());
 	}
 }
-

@@ -3,61 +3,54 @@ package web;
 import java.util.ArrayList;
 import java.util.List;
 
-import eventos.Evento;
-import gestores.eventos.GestorDeEventos;
 import muestras.Muestra;
 import usuarios.Usuario;
 import zonas.ZonaDeCobertura;
 
 public class PaginaWeb {
-	private GestorDeEventos gestorDeEventos;
-	private ArrayList<Usuario> usuariosRegistrados= new ArrayList<>();
-	private ArrayList<Muestra> muestrasRegistradas = new ArrayList<>();
-
-	public PaginaWeb(GestorDeEventos gestorDeEventos) {
-		this.setGestorDeEventos(gestorDeEventos);
-	}
+	private List<Usuario> usuariosRegistrados= new ArrayList<>();
+	private List<Muestra> muestrasRegistradas = new ArrayList<>();
+	private List<ZonaDeCobertura> zonasDeCoberturaRegistradas = new ArrayList<>();
 
 	// ------------------------------------------------------------
-
-	private GestorDeEventos getGestorDeEventos() {
-		return this.gestorDeEventos;
-	}
-
-	private void setGestorDeEventos(GestorDeEventos gestorDeEventos) {
-		this.gestorDeEventos = gestorDeEventos;
-	}
 
 	public List<Usuario> getUsuariosRegistrados() {
 		return this.usuariosRegistrados;
 	}
 
 	public void agregarUsuario(Usuario usuario) {
-		this.usuariosRegistrados.add(usuario);
+		if (!getUsuariosRegistrados().contains(usuario)) {
+			this.getUsuariosRegistrados().add(usuario);
+		}
 	}
+
+	// ------------------------------------------------------------
 
 	public List<Muestra> getMuestrasRegistradas() {
 		return this.muestrasRegistradas;
 	}
 
 	public void agregarMuestra(Muestra muestra) {
-		this.getMuestrasRegistradas().add(muestra);
-		this.getGestorDeEventos().notificar(Evento.MUESTRA_CARGADA, null, muestra);
+		if (!getMuestrasRegistradas().contains(muestra)) {
+			// Agregamos la muestra al historial de muestras de la pÃ¡gina web
+			this.getMuestrasRegistradas().add(muestra);
+
+			// Delegamos el procesamiento de la muestra a las zonas de cobertura
+			for (ZonaDeCobertura zona : this.getZonasDeCoberturaRegistradas()) {
+				zona.procesarNuevaMuestra(muestra);
+			}
+		}
 	}
 
 	// ------------------------------------------------------------
-	// Metodos de eventos
-	// ------------------------------------------------------------
 
-	public void subscribirZonaDeCobertura(Evento evento, ZonaDeCobertura zona) {
-		this.getGestorDeEventos().suscribir(evento, zona);
+	public List<ZonaDeCobertura> getZonasDeCoberturaRegistradas() {
+		return this.zonasDeCoberturaRegistradas;
 	}
 
-	public void desubscribirZonaDeCobertura(Evento evento, ZonaDeCobertura zona) {
-		this.getGestorDeEventos().desuscribir(evento, zona);
-	}
-	public void notificarZonaDeCobertura(Evento evento, ZonaDeCobertura zona, Muestra muestra) {
-		this.getGestorDeEventos().notificar(evento, zona, muestra);
+	public void agregarZonaDeCobertura(ZonaDeCobertura zonaDeCobertura) {
+		if (!getZonasDeCoberturaRegistradas().contains(zonaDeCobertura)) {
+			this.getZonasDeCoberturaRegistradas().add(zonaDeCobertura);
+		}
 	}
 }
-

@@ -47,7 +47,7 @@ class UsuarioTest {
 	@Test
 	void usuarioSinConocimientoValidoTieneEstadoBasico() {
 		Usuario usuario = new Usuario(false);
-		assertInstanceOf(usuarios.estados.EstadoBasico.class, usuario.getEstadoDeConocimiento());
+		assertInstanceOf(EstadoBasico.class, usuario.getEstadoDeConocimiento());
 	}
 
 	// ------------------------------------------------------------
@@ -270,3 +270,5 @@ class UsuarioTest {
 		assertFalse(usuario.tieneAlMenosNEnviosRealizadosEnLosUltimosNDias(3, 30));
 	}
 }
+UsuarioTest.java
+9 KB

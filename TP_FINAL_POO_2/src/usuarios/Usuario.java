@@ -33,14 +33,6 @@ public class Usuario {
 		this.tieneConocimientoValido = tieneConocimientoValido;
 	}
 
-	public EstadoDeConocimiento getEstadoDeConocimiento() {
-		return this.estadoDeConocimiento;
-	}
-
-	public void setEstadoDeConocimiento(EstadoDeConocimiento estado) {
-		this.estadoDeConocimiento = estado;
-	}
-
 	// ------------------------------------------------------------
 
 	public List<Muestra> getMuestrasEnviadas() {
@@ -60,6 +52,16 @@ public class Usuario {
 	}
 
 	// ------------------------------------------------------------
+	// Metodos de estado de conocimiento
+	// ------------------------------------------------------------
+
+	public EstadoDeConocimiento getEstadoDeConocimiento() {
+		return this.estadoDeConocimiento;
+	}
+
+	public void setEstadoDeConocimiento(EstadoDeConocimiento estado) {
+		this.estadoDeConocimiento = estado;
+	}
 
 	public void opinarSobreMuestra(Muestra muestra, Opinion opinion) {
 		this.getEstadoDeConocimiento().opinarSobreMuestra(this, muestra, opinion);

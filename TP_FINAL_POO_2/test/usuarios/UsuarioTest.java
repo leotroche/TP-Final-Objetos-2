@@ -270,5 +270,3 @@ class UsuarioTest {
 		assertFalse(usuario.tieneAlMenosNEnviosRealizadosEnLosUltimosNDias(3, 30));
 	}
 }
-UsuarioTest.java
-9 KB

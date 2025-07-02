@@ -51,7 +51,7 @@ class EstadoEnProcesoTest {
 
 		TipoDeInsecto tipoDeInsecto = mock(TipoDeInsecto.class);
 
-		when(opinion.getEsUnExperto()).thenReturn(true);
+		when(opinion.getEsOpinionDeExperto()).thenReturn(true);
 		when(opinion.getTipoDeInsecto()).thenReturn(tipoDeInsecto);
 		when(muestra.obtenerUltimaOpinion()).thenReturn(opinion);
 
@@ -63,7 +63,7 @@ class EstadoEnProcesoTest {
 	@Test
 	void obtenerResultadoActualDevuelveTipoDeInsectoNingunaSiHayMasDeUnaOpinionDeExperto() {
 		Opinion opinion2 = mock(Opinion.class);
-		when(opinion2.getEsUnExperto()).thenReturn(true);
+		when(opinion2.getEsOpinionDeExperto()).thenReturn(true);
 		when(opinion2.getTipoDeInsecto()).thenReturn(TipoDeInsecto.VINCHUCA_GUASAYANA);
 
 		when(muestra.opinionesDeExpertos()).thenReturn(List.of(opinion, opinion2));

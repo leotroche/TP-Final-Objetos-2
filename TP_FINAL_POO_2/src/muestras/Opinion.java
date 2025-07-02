@@ -4,48 +4,48 @@ import java.time.LocalDate;
 
 import usuarios.Usuario;
 
-public class Opinion{
-	private Usuario autor;
-	private TipoDeInsecto tipoDeInsecto;
-	private LocalDate fechaDeVotacion;
-	private boolean esUnExperto;
+public class Opinion {
+private Usuario autor;
+private TipoDeInsecto tipoDeInsecto;
+private LocalDate fechaDeVotacion;
+private boolean esOpinionDeExperto;
 
-	public Opinion(Usuario user, TipoDeInsecto insecto, boolean esOpinionDeExperto) {
-		this.setAutor(user);
-		this.setTipoDeInsecto(insecto);
+	public Opinion(Usuario usuario, TipoDeInsecto tipoDeInsecto, boolean esOpinionDeExperto) {
+		this.setAutor(usuario);
+		this.setTipoDeInsecto(tipoDeInsecto);
+		this.setEsOpinionDeExperto(esOpinionDeExperto);
 		this.setFechaDeVotacion(LocalDate.now());
-		this.setEsUnExperto(esOpinionDeExperto);
 	}
 
 	public Usuario getAutor() {
 		return this.autor;
 	}
 
+	private void setAutor(Usuario usuario) {
+		this.autor = usuario;
+	}
+
 	public TipoDeInsecto getTipoDeInsecto() {
 		return this.tipoDeInsecto;
 	}
 
-	public boolean getEsUnExperto() {
-		return this.esUnExperto;
+	private void setTipoDeInsecto(TipoDeInsecto tipoDeInsecto) {
+		this.tipoDeInsecto = tipoDeInsecto;
+	}
+
+	public boolean getEsOpinionDeExperto() {
+		return this.esOpinionDeExperto;
+	}
+
+	private void setEsOpinionDeExperto(boolean esOpinionDeExperto) {
+		this.esOpinionDeExperto = esOpinionDeExperto;
 	}
 
 	public LocalDate getFechaDeVotacion() {
 		return this.fechaDeVotacion;
 	}
 
-	public void setAutor(Usuario usuario) {
-		this.autor = usuario;
-	}
-
-	public void setTipoDeInsecto(TipoDeInsecto insecto) {
-		this.tipoDeInsecto = insecto;
-	}
-
-	private void setEsUnExperto(boolean esOpinionDeExperto) {
-		this.esUnExperto = esOpinionDeExperto;
-	}
-
-	private void setFechaDeVotacion(LocalDate date) {
-		this.fechaDeVotacion = date;
+	private void setFechaDeVotacion(LocalDate fechaDeVotacion) {
+		this.fechaDeVotacion = fechaDeVotacion;
 	}
 }

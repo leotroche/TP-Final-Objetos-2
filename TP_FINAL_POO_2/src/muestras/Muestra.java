@@ -6,41 +6,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import eventos.Evento;
-import gestores.eventos.GestorDeEventos;
 import muestras.estados.EstadoDeVerificacion;
 import muestras.estados.EstadoNoVerificado;
 import muestras.estados.EstadoVerificado;
+import muestras.observer.ObserverMuestra;
+import muestras.observer.SubjectMuestra;
 import ubicaciones.Ubicacion;
 import usuarios.Usuario;
-import zonas.ZonaDeCobertura;
 
-public class Muestra {
+public class Muestra implements SubjectMuestra {
+private String foto;
+private Ubicacion ubicacion;
+private Usuario autor;
+private TipoDeInsecto tipoDeInsecto;
+private LocalDate fechaDeCreacion;
 
-	private String foto;
-	private Ubicacion ubicacion;
-	private Usuario autor;
-	private TipoDeInsecto tipoDeInsecto;
-	private GestorDeEventos gestorDeEventos;
+private List<Opinion> opiniones = new ArrayList<>();
+private List<ObserverMuestra> observadoresDeMuestraValidada = new ArrayList<>();
+private EstadoDeVerificacion estadoDeVerificacion;
 
-	private LocalDate fechaDeCreacion;
+public Muestra(String foto, Ubicacion ubicacion, Usuario autor, TipoDeInsecto tipoDeInsecto) {
+this.setFoto(foto);
+this.setUbicacion(ubicacion);
+this.setAutor(autor);
+this.setTipoDeInsecto(tipoDeInsecto);
+this.setFechaDeCreacion(LocalDate.now());
 
-	private List<Opinion> opiniones = new ArrayList<>();
-	private EstadoDeVerificacion estadoDeVerificacion;
-
-	public Muestra(String foto, Ubicacion ubicacion, Usuario autor, TipoDeInsecto tipoDeInsecto,
-			GestorDeEventos gestorDeEventos) {
-
-		this.setFoto(foto);
-		this.setUbicacion(ubicacion);
-		this.setAutor(autor);
-		this.setTipoDeInsecto(tipoDeInsecto);
-		this.setFechaDeCreacion(LocalDate.now());
-		this.setGestorDeEventos(gestorDeEventos);
-
-		this.setEstadoDeVerificacion(new EstadoNoVerificado());
-		this.agregarOpinion(new Opinion(autor, tipoDeInsecto, false));
-	}
+this.setEstadoDeVerificacion(new EstadoNoVerificado());
+this.agregarOpinion(new Opinion(autor, tipoDeInsecto, false));
+}
 
 	// ------------------------------------------------------------
 
@@ -76,13 +70,6 @@ public class Muestra {
 		this.autor = usuario;
 	}
 
-	private GestorDeEventos getGestorDeEventos() {
-		return this.gestorDeEventos;
-	}
-
-	private void setGestorDeEventos(GestorDeEventos gestorDeEventos) {
-		this.gestorDeEventos = gestorDeEventos;
-	}
 
 	public LocalDate getFechaDeCreacion() {
 		return this.fechaDeCreacion;
@@ -109,7 +96,9 @@ public class Muestra {
 	}
 
 	public void agregarOpinion(Opinion opinion) {
-		this.getEstadoDeVerificacion().agregarOpinion(this, opinion);
+		if (!this.getOpiniones().contains(opinion)) {
+			this.getEstadoDeVerificacion().agregarOpinion(this, opinion);
+		}
 	}
 
 	public void doAgregarOpinion(Opinion opinion) {
@@ -128,8 +117,11 @@ public class Muestra {
 		TipoDeInsecto tipo = this.obtenerUltimaOpinion().getTipoDeInsecto();
 
 		if (this.cantidadDeOpinionesConTipo(tipo) > 1) {
+			// Si la muestra tiene más de una opinión del mismo tipo, se verifica
 			this.setEstadoDeVerificacion(new EstadoVerificado());
-			this.notificarZonasDeCobertura(Evento.MUESTRA_VALIDADA, null, this);
+
+			// Notificamos a las zonas de cobertura que la muestra fue validada
+			this.notificarMuestraValidada();
 		}
 	}
 
@@ -169,18 +161,31 @@ public class Muestra {
 	}
 
 	// ------------------------------------------------------------
-	// Metodos de eventos
+	// Metodos de observer
 	// ------------------------------------------------------------
 
-	public void suscribirZonaDeCobertura(Evento evento, ZonaDeCobertura zona) {
-		this.getGestorDeEventos().suscribir(evento, zona);
+	public List<ObserverMuestra> getObservadoresDeMuestraValidada() {
+		return this.observadoresDeMuestraValidada;
 	}
 
-	public void desuscribirZonaDeCobertura(Evento evento, ZonaDeCobertura zona) {
-		this.getGestorDeEventos().desuscribir(evento, zona);
+	@Override
+	public void suscribirMuestraValidada(ObserverMuestra zona) {
+		if (!this.getObservadoresDeMuestraValidada().contains(zona)) {
+			this.getObservadoresDeMuestraValidada().add(zona);
+		}
 	}
 
-	public void notificarZonasDeCobertura(Evento evento, ZonaDeCobertura zona, Muestra muestra) {
-		this.getGestorDeEventos().notificar(evento, zona, this);
+	@Override
+	public void desuscribirMuestraValidada(ObserverMuestra zona) {
+		if (this.getObservadoresDeMuestraValidada().contains(zona)) {
+			this.getObservadoresDeMuestraValidada().remove(zona);
+		}
+	}
+
+	@Override
+	public void notificarMuestraValidada() {
+		for (ObserverMuestra observer : this.getObservadoresDeMuestraValidada()) {
+			observer.updateMuestraValidada(this);
+		}
 	}
 }

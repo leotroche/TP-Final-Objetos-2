@@ -1,6 +1,6 @@
 package muestras;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -17,22 +17,20 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import eventos.Evento;
-import gestores.eventos.GestorDeEventos;
 import muestras.estados.EstadoDeVerificacion;
+import muestras.estados.EstadoNoVerificado;
 import muestras.estados.EstadoVerificado;
+import muestras.observer.ObserverMuestra;
 import ubicaciones.Ubicacion;
 import usuarios.Usuario;
-import zonas.ZonaDeCobertura;
 
 class MuestraTest {
-	private Muestra muestra;
+private Muestra muestra;
 
-	private String foto;
-	private Ubicacion ubicacion;
-	private Usuario autor;
-	private TipoDeInsecto tipoDeInsecto;
-	private GestorDeEventos gestorDeEventos;
+private String foto;
+private Ubicacion ubicacion;
+private Usuario autor;
+private TipoDeInsecto tipoDeInsecto;
 
 	@BeforeEach
 	void setUp() {
@@ -40,9 +38,8 @@ class MuestraTest {
 		ubicacion = mock(Ubicacion.class);
 		autor = mock(Usuario.class);
 		tipoDeInsecto = mock(TipoDeInsecto.class);
-		gestorDeEventos = mock(GestorDeEventos.class);
 
-		muestra = new Muestra(foto, ubicacion, autor, tipoDeInsecto, gestorDeEventos);
+		muestra = new Muestra(foto, ubicacion, autor, tipoDeInsecto);
 	}
 
 	// ------------------------------------------------------------
@@ -83,17 +80,49 @@ class MuestraTest {
 	}
 
 	@Test
+	void getEstadoDeVerificacionInicialmenteEsEstadoNoVerificado() {
+		assertTrue(muestra.getEstadoDeVerificacion() instanceof EstadoNoVerificado);
+	}
+
+	@Test
+	void setEstadoDeVerificacionCambiaElEstadoCorrectamente() {
+		EstadoDeVerificacion nuevoEstado = mock(EstadoDeVerificacion.class);
+		muestra.setEstadoDeVerificacion(nuevoEstado);
+
+		assertEquals(nuevoEstado, muestra.getEstadoDeVerificacion());
+	}
+
+	// ------------------------------------------------------------
+
+	@Test
 	void agregarOpinionDelegaAEstadoDeVerificacion() {
 		Muestra muestraSpy = spy(muestra);
-		EstadoDeVerificacion estadoMock = mock(EstadoDeVerificacion.class);
+		EstadoDeVerificacion estado = mock(EstadoDeVerificacion.class);
 
-		doReturn(estadoMock).when(muestraSpy).getEstadoDeVerificacion();
+		doReturn(estado).when(muestraSpy).getEstadoDeVerificacion();
 
 		Opinion opinion = mock(Opinion.class);
 		muestraSpy.agregarOpinion(opinion);
 
-		verify(estadoMock).agregarOpinion(muestraSpy, opinion);
+		verify(estado).agregarOpinion(muestraSpy, opinion);
 	}
+
+	@Test
+	void agregarOpinionNoAgregaLaMismaOpinionDosVeces() {
+		Muestra muestraSpy = spy(muestra);
+		Opinion opinion = mock(Opinion.class);
+
+		// Simulamos que la muestra ya tiene esa opinión
+		doReturn(List.of(opinion)).when(muestraSpy).getOpiniones();
+
+		// Intentamos agregar la misma opinión nuevamente
+		muestraSpy.agregarOpinion(opinion);
+
+		// Verificamos que no se llame a doAgregarOpinion
+		verify(muestraSpy, never()).doAgregarOpinion(opinion);
+	}
+
+	// ------------------------------------------------------------
 
 	@Test
 	void doAgregarOpinionAgregaOpinionALista() {
@@ -104,69 +133,118 @@ class MuestraTest {
 		assertTrue(muestra.getOpiniones().contains(opinion));
 	}
 
+	// ------------------------------------------------------------
+
 	@Test
 	void recibioOpinionDeExpertoDelegaAEstadoDeVerificacion() {
 		Muestra muestraSpy = spy(muestra);
-		EstadoDeVerificacion estadoMock = mock(EstadoDeVerificacion.class);
+		EstadoDeVerificacion estado = mock(EstadoDeVerificacion.class);
 
-		doReturn(estadoMock).when(muestraSpy).getEstadoDeVerificacion();
+		doReturn(estado).when(muestraSpy).getEstadoDeVerificacion();
 
 		muestraSpy.recibioOpinionDeExperto();
 
-		verify(estadoMock).recibioOpinionDeExperto(muestraSpy);
-	}
-
-	@Test
-	void obtenerResultadoActualDelegaAEstadoDeVerificacion() {
-		Muestra muestraSpy = spy(muestra);
-		EstadoDeVerificacion estadoMock = mock(EstadoDeVerificacion.class);
-		TipoDeInsecto tipoMock = mock(TipoDeInsecto.class);
-
-		doReturn(estadoMock).when(muestraSpy).getEstadoDeVerificacion();
-		doReturn(tipoMock).when(estadoMock).obtenerResultadoActual(muestraSpy);
-
-		TipoDeInsecto resultado = muestraSpy.obtenerResultadoActual();
-
-		assertEquals(tipoMock, resultado);
+		verify(estado).recibioOpinionDeExperto(muestraSpy);
 	}
 
 	// ------------------------------------------------------------
 
 	@Test
-	void verificarMuestraSiCorrespondeVerificaYNotifica() {
+	void obtenerResultadoActualDelegaAEstadoDeVerificacion() {
 		Muestra muestraSpy = spy(muestra);
+		EstadoDeVerificacion estado = mock(EstadoDeVerificacion.class);
+
+		doReturn(estado).when(muestraSpy).getEstadoDeVerificacion();
+
+		muestraSpy.obtenerResultadoActual();
+
+		verify(estado).obtenerResultadoActual(muestraSpy);
+	}
+
+	// ------------------------------------------------------------
+
+	@Test
+	void verificarMuestraCambiaEstadoAVerificadoSiHayOpinionesCoincidentes() {
+		Muestra muestraSpy = spy(muestra);
+
 		Opinion opinion = mock(Opinion.class);
-		TipoDeInsecto tipoDeInsectoMock = mock(TipoDeInsecto.class);
+		TipoDeInsecto tipoDeInsecto = mock(TipoDeInsecto.class);
 
-		when(opinion.getTipoDeInsecto()).thenReturn(tipoDeInsectoMock);
+		doReturn(tipoDeInsecto).when(opinion).getTipoDeInsecto();
 
 		muestraSpy.doAgregarOpinion(opinion);
 		muestraSpy.doAgregarOpinion(opinion);
 
-		when(muestraSpy.cantidadDeOpinionesConTipo(tipoDeInsectoMock)).thenReturn(2);
+		doReturn(opinion).when(muestraSpy).obtenerUltimaOpinion();
+		doReturn(2).when(muestraSpy).cantidadDeOpinionesConTipo(tipoDeInsecto);
 
 		muestraSpy.verificarMuestraSiCorresponde();
 
 		verify(muestraSpy).setEstadoDeVerificacion(any(EstadoVerificado.class));
-		verify(muestraSpy).notificarZonasDeCobertura(Evento.MUESTRA_VALIDADA, null, muestraSpy);
 	}
 
-	@Test
-	void verificarMuestraSiCorrespondeNoVerificaNiNotificaSiNoHaySuficientesOpiniones() {
-		Muestra muestraSpy = spy(muestra);
-		Opinion opinion = mock(Opinion.class);
-		TipoDeInsecto tipoDeInsectoMock = mock(TipoDeInsecto.class);
+	// ------------------------------------------------------------
 
-		when(opinion.getTipoDeInsecto()).thenReturn(tipoDeInsectoMock);
+	@Test
+	void verificarMuestraNotificaObservadoresSiHayOpinionesCoincidentes() {
+		Muestra muestraSpy = spy(muestra);
+
+		Opinion opinion = mock(Opinion.class);
+		TipoDeInsecto tipoDeInsecto = mock(TipoDeInsecto.class);
+
+		doReturn(tipoDeInsecto).when(opinion).getTipoDeInsecto();
 
 		muestraSpy.doAgregarOpinion(opinion);
+		muestraSpy.doAgregarOpinion(opinion);
 
-		when(muestraSpy.cantidadDeOpinionesConTipo(tipoDeInsectoMock)).thenReturn(1);
+		doReturn(opinion).when(muestraSpy).obtenerUltimaOpinion();
+		doReturn(2).when(muestraSpy).cantidadDeOpinionesConTipo(tipoDeInsecto);
 
 		muestraSpy.verificarMuestraSiCorresponde();
 
-		verify(muestraSpy, never()).setEstadoDeVerificacion(any());
-		verify(muestraSpy, never()).notificarZonasDeCobertura(any(), any(), any());
+		verify(muestraSpy).notificarMuestraValidada();
+	}
+
+	// ------------------------------------------------------------
+
+	@Test
+	void verificarMuestraNoCambiaEstadoSiNoHayOpinionesCoincidentes() {
+		Muestra muestraSpy = spy(muestra);
+
+		Opinion opinion = mock(Opinion.class);
+		TipoDeInsecto tipoDeInsecto = mock(TipoDeInsecto.class);
+
+		doReturn(tipoDeInsecto).when(opinion).getTipoDeInsecto();
+
+		muestraSpy.doAgregarOpinion(opinion);
+
+		doReturn(opinion).when(muestraSpy).obtenerUltimaOpinion();
+		doReturn(1).when(muestraSpy).cantidadDeOpinionesConTipo(tipoDeInsecto);
+
+		muestraSpy.verificarMuestraSiCorresponde();
+
+		verify(muestraSpy, never()).setEstadoDeVerificacion(any(EstadoVerificado.class));
+	}
+
+	// ------------------------------------------------------------
+
+	@Test
+	void verificarMuestraNoNotificaObservadoresSiNoHayOpinionesCoincidentes() {
+		Muestra muestraSpy = spy(muestra);
+
+		Opinion opinion = mock(Opinion.class);
+		TipoDeInsecto tipoDeInsecto = mock(TipoDeInsecto.class);
+
+		doReturn(tipoDeInsecto).when(opinion).getTipoDeInsecto();
+
+		muestraSpy.doAgregarOpinion(opinion);
+
+		doReturn(opinion).when(muestraSpy).obtenerUltimaOpinion();
+		doReturn(1).when(muestraSpy).cantidadDeOpinionesConTipo(tipoDeInsecto);
+
+		muestraSpy.verificarMuestraSiCorresponde();
+
+		verify(muestraSpy, never()).notificarMuestraValidada();
 	}
 
 	// ------------------------------------------------------------
@@ -192,15 +270,17 @@ class MuestraTest {
 		assertEquals(1, muestra.cantidadDeOpinionesConTipo(tipoDeInsecto2));
 	}
 
+	// ------------------------------------------------------------
+
 	@Test
 	void opinionesDeExpertosFiltraSoloExpertos() {
 		Opinion opinion1 = mock(Opinion.class);
 		Opinion opinion2 = mock(Opinion.class);
 		Opinion opinion3 = mock(Opinion.class);
 
-		when(opinion1.getEsUnExperto()).thenReturn(true);
-		when(opinion2.getEsUnExperto()).thenReturn(false);
-		when(opinion3.getEsUnExperto()).thenReturn(true);
+		when(opinion1.getEsOpinionDeExperto()).thenReturn(true);
+		when(opinion2.getEsOpinionDeExperto()).thenReturn(false);
+		when(opinion3.getEsOpinionDeExperto()).thenReturn(true);
 
 		muestra.doAgregarOpinion(opinion1);
 		muestra.doAgregarOpinion(opinion2);
@@ -213,6 +293,8 @@ class MuestraTest {
 		assertTrue(expertos.contains(opinion3));
 		assertFalse(expertos.contains(opinion2));
 	}
+
+	// ------------------------------------------------------------
 
 	@Test
 	void tipoMasFrecuenteEnOpinionesDevuelveElCorrecto() {
@@ -250,6 +332,8 @@ class MuestraTest {
 		assertEquals(opinion2, muestra.obtenerUltimaOpinion());
 	}
 
+	// ------------------------------------------------------------
+
 	@Test
 	void getFechaDeUltimaVotacionDevuelveLaFechaDeLaUltimaOpinion() {
 		Opinion opinion1 = mock(Opinion.class);
@@ -268,36 +352,76 @@ class MuestraTest {
 	}
 
 	// ------------------------------------------------------------
-	// Metodos de eventos
+	// Metodos de Observer
 	// ------------------------------------------------------------
 
 	@Test
-	void suscribirZonaDeCoberturaDelegaAGestorDeEventos() {
-		Evento evento = mock(Evento.class);
-		ZonaDeCobertura zonaDeCobertura = mock(ZonaDeCobertura.class);
-
-		muestra.suscribirZonaDeCobertura(evento, zonaDeCobertura);
-
-		verify(gestorDeEventos).suscribir(evento, zonaDeCobertura);
+	void unaMuestraInicialmenteNoTieneObservadoresDeMuestraValidada() {
+		assertTrue(muestra.getObservadoresDeMuestraValidada().isEmpty());
 	}
 
+	// ------------------------------------------------------------
+
 	@Test
-	void desuscribirZonaDeCoberturaDelegaAGestorDeEventos() {
-		Evento evento = mock(Evento.class);
-		ZonaDeCobertura zonaDeCobertura = mock(ZonaDeCobertura.class);
+	void suscribirMuestraValidadaSuscribeCorrectamenteAUnObservador() {
+		ObserverMuestra observer = mock(ObserverMuestra.class);
 
-		muestra.desuscribirZonaDeCobertura(evento, zonaDeCobertura);
+		muestra.suscribirMuestraValidada(observer);
 
-		verify(gestorDeEventos).desuscribir(evento, zonaDeCobertura);
+		assertEquals(1, muestra.getObservadoresDeMuestraValidada().size());
+		assertTrue(muestra.getObservadoresDeMuestraValidada().contains(observer));
 	}
 
+	// ------------------------------------------------------------
+
 	@Test
-	void notificarZonasDeCoberturaDelegaAGestorDeEventos() {
-		Evento evento = mock(Evento.class);
-		ZonaDeCobertura zonaDeCobertura = mock(ZonaDeCobertura.class);
+	void suscribirMuestraValidadaNoAgregaDosVecesAlMismoObservador() {
+		ObserverMuestra observer = mock(ObserverMuestra.class);
 
-		muestra.notificarZonasDeCobertura(evento, zonaDeCobertura, muestra);
+		muestra.suscribirMuestraValidada(observer);
+		muestra.suscribirMuestraValidada(observer);
 
-		verify(gestorDeEventos).notificar(evento, zonaDeCobertura, muestra);
+		assertEquals(1, muestra.getObservadoresDeMuestraValidada().size());
+	}
+
+	// ------------------------------------------------------------
+
+	@Test
+	void desuscribirMuestraValidadaDesuscribeCorrectamenteAUnObservador() {
+		ObserverMuestra observer = mock(ObserverMuestra.class);
+
+		muestra.suscribirMuestraValidada(observer);
+		muestra.desuscribirMuestraValidada(observer);
+
+		assertTrue(muestra.getObservadoresDeMuestraValidada().isEmpty());
+		assertFalse(muestra.getObservadoresDeMuestraValidada().contains(observer));
+	}
+
+	// ------------------------------------------------------------
+
+	@Test
+	void desuscribirMuestraValidadaNoHaceNadaSiElObservadorNoEstaSuscrito() {
+		ObserverMuestra observer = mock(ObserverMuestra.class);
+
+		muestra.desuscribirMuestraValidada(observer);
+
+		assertTrue(muestra.getObservadoresDeMuestraValidada().isEmpty());
+		assertFalse(muestra.getObservadoresDeMuestraValidada().contains(observer));
+	}
+
+	// ------------------------------------------------------------
+
+	@Test
+	void notificarMuestraValidadaNotificaCorrectamenteALosObservadores() {
+		ObserverMuestra observer1 = mock(ObserverMuestra.class);
+		ObserverMuestra observer2 = mock(ObserverMuestra.class);
+
+		muestra.suscribirMuestraValidada(observer1);
+		muestra.suscribirMuestraValidada(observer2);
+
+		muestra.notificarMuestraValidada();
+
+		verify(observer1).updateMuestraValidada(muestra);
+		verify(observer2).updateMuestraValidada(muestra);
 	}
 }

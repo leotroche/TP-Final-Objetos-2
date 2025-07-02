@@ -34,16 +34,10 @@ public class Ubicacion {
 	}
 
 	private void setLatitud(double latitud) {
-		if (latitud < -90 || latitud > 90) {
-			// throw new IllegalArgumentException("Latitud debe estar entre -90 y 90 grados.");
-		}
 		this.latitud = latitud;
 	}
 
 	private void setLongitud(double longitud) {
-		if (longitud < -180 || longitud > 180) {
-			// throw new IllegalArgumentException("Longitud debe estar entre -180 y 180 grados.");
-		}
 		this.longitud = longitud;
 	}
 

@@ -136,7 +136,7 @@ public class Muestra implements SubjectMuestra {
 
 	public List<Opinion> opinionesDeExpertos() {
 		return this.getOpiniones().stream()
-				.filter(opinion -> opinion.getEsUnExperto())
+				.filter(opinion -> opinion.getEsOpinionDeExperto())
 				.toList();
 	}
 

@@ -161,18 +161,31 @@ this.agregarOpinion(new Opinion(autor, tipoDeInsecto, false));
 	}
 
 	// ------------------------------------------------------------
-	// Metodos de eventos
+	// Metodos de observer
 	// ------------------------------------------------------------
 
-	public void suscribirZonaDeCobertura(Evento evento, ZonaDeCobertura zona) {
-		this.getGestorDeEventos().suscribir(evento, zona);
+	public List<ObserverMuestra> getObservadoresDeMuestraValidada() {
+		return this.observadoresDeMuestraValidada;
 	}
 
-	public void desuscribirZonaDeCobertura(Evento evento, ZonaDeCobertura zona) {
-		this.getGestorDeEventos().desuscribir(evento, zona);
+	@Override
+	public void suscribirMuestraValidada(ObserverMuestra zona) {
+		if (!this.getObservadoresDeMuestraValidada().contains(zona)) {
+			this.getObservadoresDeMuestraValidada().add(zona);
+		}
 	}
 
-	public void notificarZonasDeCobertura(Evento evento, ZonaDeCobertura zona, Muestra muestra) {
-		this.getGestorDeEventos().notificar(evento, zona, this);
+	@Override
+	public void desuscribirMuestraValidada(ObserverMuestra zona) {
+		if (this.getObservadoresDeMuestraValidada().contains(zona)) {
+			this.getObservadoresDeMuestraValidada().remove(zona);
+		}
+	}
+
+	@Override
+	public void notificarMuestraValidada() {
+		for (ObserverMuestra observer : this.getObservadoresDeMuestraValidada()) {
+			observer.updateMuestraValidada(this);
+		}
 	}
 }

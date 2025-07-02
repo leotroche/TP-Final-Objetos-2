@@ -3,7 +3,6 @@ package web;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import muestras.Muestra;
 import usuarios.Usuario;
 import zonas.ZonaDeCobertura;
@@ -11,7 +10,7 @@ import zonas.ZonaDeCobertura;
 public class PaginaWeb {
 	private List<Usuario> usuariosRegistrados= new ArrayList<>();
 	private List<Muestra> muestrasRegistradas = new ArrayList<>();
-	private List<ZonaDeCobertura> zonasDeCobertura = new ArrayList<>();
+	private List<ZonaDeCobertura> zonasDeCoberturaRegistradas = new ArrayList<>();
 
 	// ------------------------------------------------------------
 
@@ -20,32 +19,38 @@ public class PaginaWeb {
 	}
 
 	public void agregarUsuario(Usuario usuario) {
-		this.usuariosRegistrados.add(usuario);
+		if (!getUsuariosRegistrados().contains(usuario)) {
+			this.getUsuariosRegistrados().add(usuario);
+		}
 	}
-	
-	public List<ZonaDeCobertura> getZonasDeCoberturaRegistradas() {
-		return (this.zonasDeCobertura);
-	}
+
+	// ------------------------------------------------------------
 
 	public List<Muestra> getMuestrasRegistradas() {
 		return this.muestrasRegistradas;
 	}
 
 	public void agregarMuestra(Muestra muestra) {
-		this.getMuestrasRegistradas().add(muestra);
-		for(ZonaDeCobertura zona : this.getZonasDeCoberturaRegistradas()) {
-			if (zona.perteneceALaZona(muestra)) {
+		if (!getMuestrasRegistradas().contains(muestra)) {
+			// Agregamos la muestra al historial de muestras de la pÃ¡gina web
+			this.getMuestrasRegistradas().add(muestra);
+
+			// Delegamos el procesamiento de la muestra a las zonas de cobertura
+			for (ZonaDeCobertura zona : this.getZonasDeCoberturaRegistradas()) {
 				zona.procesarNuevaMuestra(muestra);
 			}
 		}
 	}
-	
 
-	public void agregarZonaDeCobertura(ZonaDeCobertura zona) {
-		if (!this.zonasDeCobertura.contains(zona)) {
-			this.zonasDeCobertura.add(zona);
+	// ------------------------------------------------------------
+
+	public List<ZonaDeCobertura> getZonasDeCoberturaRegistradas() {
+		return this.zonasDeCoberturaRegistradas;
+	}
+
+	public void agregarZonaDeCobertura(ZonaDeCobertura zonaDeCobertura) {
+		if (!getZonasDeCoberturaRegistradas().contains(zonaDeCobertura)) {
+			this.getZonasDeCoberturaRegistradas().add(zonaDeCobertura);
 		}
 	}
-	
 }
-

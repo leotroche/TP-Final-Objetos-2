@@ -5,47 +5,47 @@ import java.time.LocalDate;
 import usuarios.Usuario;
 
 public class Opinion{
-	private Usuario autor;
-	private TipoDeInsecto tipoDeInsecto;
-	private LocalDate fechaDeVotacion;
-	private boolean esUnExperto;
+private Usuario autor;
+private TipoDeInsecto tipoDeInsecto;
+private LocalDate fechaDeVotacion;
+private boolean esOpinionDeExperto;
 
-	public Opinion(Usuario user, TipoDeInsecto insecto, boolean esOpinionDeExperto) {
-		this.setAutor(user);
-		this.setTipoDeInsecto(insecto);
-		this.setFechaDeVotacion(LocalDate.now());
-		this.setEsUnExperto(esOpinionDeExperto);
-	}
+public Opinion(Usuario usuario, TipoDeInsecto tipoDeInsecto, boolean esOpinionDeExperto) {
+this.setAutor(usuario);
+this.setTipoDeInsecto(tipoDeInsecto);
+this.setEsOpinionDeExperto(esOpinionDeExperto);
+this.setFechaDeVotacion(LocalDate.now());
+}
 
-	public Usuario getAutor() {
-		return this.autor;
-	}
+public Usuario getAutor() {
+return this.autor;
+}
 
-	public TipoDeInsecto getTipoDeInsecto() {
-		return this.tipoDeInsecto;
-	}
+private void setAutor(Usuario usuario) {
+this.autor = usuario;
+}
 
-	public boolean getEsUnExperto() {
-		return this.esUnExperto;
-	}
+public TipoDeInsecto getTipoDeInsecto() {
+return this.tipoDeInsecto;
+}
 
-	public LocalDate getFechaDeVotacion() {
-		return this.fechaDeVotacion;
-	}
+private void setTipoDeInsecto(TipoDeInsecto tipoDeInsecto) {
+this.tipoDeInsecto = tipoDeInsecto;
+}
 
-	public void setAutor(Usuario usuario) {
-		this.autor = usuario;
-	}
+public boolean getEsOpinionDeExperto() {
+return this.esOpinionDeExperto;
+}
 
-	public void setTipoDeInsecto(TipoDeInsecto insecto) {
-		this.tipoDeInsecto = insecto;
-	}
+private void setEsOpinionDeExperto(boolean esOpinionDeExperto) {
+this.esOpinionDeExperto = esOpinionDeExperto;
+}
 
-	private void setEsUnExperto(boolean esOpinionDeExperto) {
-		this.esUnExperto = esOpinionDeExperto;
-	}
+public LocalDate getFechaDeVotacion() {
+return this.fechaDeVotacion;
+}
 
-	private void setFechaDeVotacion(LocalDate date) {
-		this.fechaDeVotacion = date;
-	}
+private void setFechaDeVotacion(LocalDate fechaDeVotacion) {
+this.fechaDeVotacion = fechaDeVotacion;
+}
 }

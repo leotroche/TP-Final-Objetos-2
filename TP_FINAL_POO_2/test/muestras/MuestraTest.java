@@ -1,6 +1,6 @@
 package muestras;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -17,22 +17,20 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import eventos.Evento;
-import gestores.eventos.GestorDeEventos;
 import muestras.estados.EstadoDeVerificacion;
+import muestras.estados.EstadoNoVerificado;
 import muestras.estados.EstadoVerificado;
+import muestras.observer.ObserverMuestra;
 import ubicaciones.Ubicacion;
 import usuarios.Usuario;
-import zonas.ZonaDeCobertura;
 
 class MuestraTest {
-	private Muestra muestra;
+private Muestra muestra;
 
-	private String foto;
-	private Ubicacion ubicacion;
-	private Usuario autor;
-	private TipoDeInsecto tipoDeInsecto;
-	private GestorDeEventos gestorDeEventos;
+private String foto;
+private Ubicacion ubicacion;
+private Usuario autor;
+private TipoDeInsecto tipoDeInsecto;
 
 	@BeforeEach
 	void setUp() {
@@ -40,9 +38,8 @@ class MuestraTest {
 		ubicacion = mock(Ubicacion.class);
 		autor = mock(Usuario.class);
 		tipoDeInsecto = mock(TipoDeInsecto.class);
-		gestorDeEventos = mock(GestorDeEventos.class);
 
-		muestra = new Muestra(foto, ubicacion, autor, tipoDeInsecto, gestorDeEventos);
+		muestra = new Muestra(foto, ubicacion, autor, tipoDeInsecto);
 	}
 
 	// ------------------------------------------------------------

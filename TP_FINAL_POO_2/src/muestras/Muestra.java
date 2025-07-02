@@ -96,7 +96,9 @@ this.agregarOpinion(new Opinion(autor, tipoDeInsecto, false));
 	}
 
 	public void agregarOpinion(Opinion opinion) {
-		this.getEstadoDeVerificacion().agregarOpinion(this, opinion);
+		if (!this.getOpiniones().contains(opinion)) {
+			this.getEstadoDeVerificacion().agregarOpinion(this, opinion);
+		}
 	}
 
 	public void doAgregarOpinion(Opinion opinion) {
@@ -115,8 +117,11 @@ this.agregarOpinion(new Opinion(autor, tipoDeInsecto, false));
 		TipoDeInsecto tipo = this.obtenerUltimaOpinion().getTipoDeInsecto();
 
 		if (this.cantidadDeOpinionesConTipo(tipo) > 1) {
+			// Si la muestra tiene más de una opinión del mismo tipo, se verifica
 			this.setEstadoDeVerificacion(new EstadoVerificado());
-			this.notificarZonasDeCobertura(Evento.MUESTRA_VALIDADA, null, this);
+
+			// Notificamos a las zonas de cobertura que la muestra fue validada
+			this.notificarMuestraValidada();
 		}
 	}
 

@@ -22,6 +22,6 @@ public class FiltroTipoDeInsecto extends Filtro {
 
 	@Override
 	public boolean cumple(Muestra muestra) {
-		return this.getTipoDeInsecto().equals(muestra.getTipoDeInsecto());
+		return this.getTipoDeInsecto().equals(muestra.obtenerResultadoActual());
 	}
 }

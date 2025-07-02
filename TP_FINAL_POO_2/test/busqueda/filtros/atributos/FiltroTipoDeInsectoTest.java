@@ -43,7 +43,7 @@ class FiltroTipoDeInsectoTest {
 	void retornaTrueSiElTipoDeInsectoCoincide() {
 		Filtro filtro = new FiltroTipoDeInsecto(vinchuca);
 
-		when(muestra.getTipoDeInsecto()).thenReturn(vinchuca);
+		when(muestra.obtenerResultadoActual()).thenReturn(vinchuca);
 
 		assertTrue(filtro.cumple(muestra));
 	}
@@ -64,7 +64,7 @@ class FiltroTipoDeInsectoTest {
 		Filtro filtro = new FiltroTipoDeInsecto(vinchuca);
 
 		// Simulamos que la primera muestra cumple el filtro
-		when(muestra.getTipoDeInsecto()).thenReturn(vinchuca);
+		when(muestra.obtenerResultadoActual()).thenReturn(vinchuca);
 
 		List<Muestra> muestrasFiltradas = filtro.filtrar(muestras);
 

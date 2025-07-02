@@ -1,28 +1,27 @@
 package zonas;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
-import eventos.Evento;
-import gestores.eventos.GestorDeEventos;
-import gestores.eventos.Observer;
 import muestras.Muestra;
-import organizaciones.Organizacion;
+import muestras.observer.ObserverMuestra;
 import ubicaciones.Ubicacion;
+import zonas.observer.ObserverZonaDeCobertura;
+import zonas.observer.SubjectZonaDeCobertura;
 
-public class ZonaDeCobertura implements Observer {
+public class ZonaDeCobertura implements SubjectZonaDeCobertura, ObserverMuestra {
 	private String nombre;
 	private Ubicacion epicentro;
 	private double radio;
-	private GestorDeEventos gestorDeEventos;
-	private List<Muestra> muestras = new ArrayList<>();
 
-	public ZonaDeCobertura(String nombre, Ubicacion epicentro, double radioKm, GestorDeEventos gestorDeEventos) {
+	private List<Muestra> muestras = new ArrayList<>();
+	private List<ObserverZonaDeCobertura> observadoresDeMuestraCargada = new ArrayList<>();
+	private List<ObserverZonaDeCobertura> observadoresDeMuestraValidada = new ArrayList<>();
+
+	public ZonaDeCobertura(String nombre, Ubicacion epicentro, double radio) {
 		this.setNombre(nombre);
 		this.setEpicentro(epicentro);
-		this.setRadio(radioKm);
-		this.setGestorDeEventos(gestorDeEventos);
+		this.setRadio(radio);
 	}
 
 	// --------------------------------------------------------------------------------
@@ -39,10 +38,6 @@ public class ZonaDeCobertura implements Observer {
 		return this.radio;
 	}
 
-	private GestorDeEventos getGestorDeEventos() {
-		return this.gestorDeEventos;
-	}
-
 	private void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
@@ -55,10 +50,6 @@ public class ZonaDeCobertura implements Observer {
 		this.radio = radio;
 	}
 
-	private void setGestorDeEventos(GestorDeEventos gestorDeEventos) {
-		this.gestorDeEventos = gestorDeEventos;
-	}
-
 	// --------------------------------------------------------------------------------
 
 	public List<Muestra> getMuestras() {
@@ -66,7 +57,7 @@ public class ZonaDeCobertura implements Observer {
 	}
 
 	public void agregarMuestra(Muestra muestra) {
-		this.muestras.add(muestra);
+		this.getMuestras().add(muestra);
 	}
 
 	public boolean perteneceALaZona(Muestra muestra) {
@@ -79,32 +70,82 @@ public class ZonaDeCobertura implements Observer {
 	}
 
 	public List<ZonaDeCobertura> zonasSolapadas(List<ZonaDeCobertura> zonas) {
-		return zonas.stream()
-				.filter(otraZona -> this.seSolapaCon(otraZona))
-				.toList();
+		return zonas.stream().filter(otraZona -> this.seSolapaCon(otraZona)).toList();
+	}
+
+	public void procesarNuevaMuestra(Muestra muestra) {
+		if (this.perteneceALaZona(muestra)) {
+			// Agregamos la muestra a la zona de cobertura
+			this.agregarMuestra(muestra);
+
+			// Suscribimos el obsevador a la muestra (para evento muestra validada)
+			muestra.suscribirMuestraValidada(this);
+
+			// Notificamos a los observadores suscritos que se ha cargado una nueva muestra
+			this.notificarMuestraCargada(muestra);
+		}
 	}
 
 	// --------------------------------------------------------------------------------
-	// Métodos de eventos
+	// Metodos de Observer
 	// --------------------------------------------------------------------------------
 
-	public void suscribirOrganizacion(Evento evento, Organizacion organizacion) {
-		this.getGestorDeEventos().suscribir(evento, organizacion);
-	}
-
-	public void desuscribirOrganizacion(Evento evento, Organizacion organizacion) {
-		this.getGestorDeEventos().desuscribir(evento, organizacion);
-	}
-
-	public void notificarOrganizaciones(Evento evento, ZonaDeCobertura zonaDeCobertura, Muestra muestra) {
-		this.getGestorDeEventos().notificar(evento, zonaDeCobertura, muestra);
+	public List<ObserverZonaDeCobertura> getObservadoresDeMuestraCargada() {
+		return this.observadoresDeMuestraCargada;
 	}
 
 	@Override
-	public void update(Evento evento, ZonaDeCobertura zonaDeCobertura, Muestra muestra) {
-		if (this.perteneceALaZona(muestra)) {
-			this.agregarMuestra(muestra);
-			this.notificarOrganizaciones(evento, zonaDeCobertura, muestra);
+	public void suscribirMuestraCargada(ObserverZonaDeCobertura organizacion) {
+		if (!this.getObservadoresDeMuestraCargada().contains(organizacion)) {
+			this.getObservadoresDeMuestraCargada().add(organizacion);
 		}
+	}
+
+	@Override
+	public void desuscribirMuestraCargada(ObserverZonaDeCobertura organizacion) {
+		if (this.getObservadoresDeMuestraCargada().contains(organizacion)) {
+			this.getObservadoresDeMuestraCargada().remove(organizacion);
+		}
+	}
+
+	@Override
+	public void notificarMuestraCargada(Muestra muestra) {
+		for (ObserverZonaDeCobertura observer : this.getObservadoresDeMuestraCargada()) {
+			observer.updateMuestraCargada(this, muestra);
+		}
+	}
+
+	// --------------------------------------------------------------------------------
+
+	public List<ObserverZonaDeCobertura> getObservadoresDeMuestraValidada() {
+		return this.observadoresDeMuestraValidada;
+	}
+
+	@Override
+	public void suscribirMuestraValidada(ObserverZonaDeCobertura organizacion) {
+		if (!this.getObservadoresDeMuestraValidada().contains(organizacion)) {
+			this.getObservadoresDeMuestraValidada().add(organizacion);
+		}
+	}
+
+	@Override
+	public void desuscribirMuestraValidada(ObserverZonaDeCobertura organizacion) {
+		if (this.getObservadoresDeMuestraValidada().contains(organizacion)) {
+			this.getObservadoresDeMuestraValidada().remove(organizacion);
+		}
+	}
+
+	@Override
+	public void notificarMuestraValidada(Muestra muestra) {
+		for (ObserverZonaDeCobertura observer : this.getObservadoresDeMuestraValidada()) {
+			observer.updateMuestraValidada(this, muestra);
+		}
+	}
+
+	// --------------------------------------------------------------------------------
+
+	@Override
+	public void updateMuestraValidada(Muestra muestra) {
+		this.notificarMuestraValidada(muestra);
 	}
 }
